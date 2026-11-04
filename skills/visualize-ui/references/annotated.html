@@ -1,0 +1,76 @@
+<!doctype html>
+<!--
+Annotated composite: one frame or several side by side, with handwritten notes and arrows.
+The example is a before and after.
+
+Use: copy this file into a scratch folder next to raw/, edit the frames, tags, notes and arrow
+paths, then render <main> at 2x:   node <skill>/scripts/render.cjs annotated.html out.png
+
+Brand: replace the values in :root with DESIGN.md's Graphics section (ground, ink, text, muted,
+line) and set --font-tag / --font-body to its fonts. Load brand fonts with @font-face where their
+licence allows embedding; otherwise keep system fonts. Only the handwriting (Caveat) is fetched.
+
+Coordinates are CSS pixels inside <main>. Size <main> to fit its content.
+
+Stills: each .frame holds one <img>. Crop by sizing the frame and offsetting the image with
+negative left/top; set the image width to the capture's CSS width (the 2x PNG shown at 1x).
+
+Video overlay: put class="overlay" on <body> and delete the <img> tags. The page renders on a
+transparent background and the frames become windows the clips play through. A frame's left, top,
+width and height, doubled, are the overlay position and crop size in the ffmpeg command
+(references/capture.md). Write the speed into a tag: <small>5x slower</small>.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+	:root {
+		--ground: #f6f4f1;   /* page behind the frames */
+		--ink: #e5484d;      /* notes and arrows: one strong colour that reads on light and dark shots */
+		--text: #1c1b1f;
+		--muted: #6f6d78;
+		--line: #dcd8e0;     /* frame hairline */
+		--font-tag: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+		--font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	}
+	body { margin: 0; background: var(--ground); color: var(--text); font-family: var(--font-body); }
+	body.overlay { background: transparent; }
+	main { position: relative; width: 620px; height: 334px; }
+	.tag { position: absolute; top: 14px; font-family: var(--font-tag); font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+	.tag small { margin-left: 6px; font-family: var(--font-body); font-weight: 500; font-size: 12px; letter-spacing: 0; color: var(--muted); }
+	.frame { position: absolute; top: 42px; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+	.frame img { display: block; position: absolute; }
+	body.overlay .frame { border-radius: 0; border-color: transparent; background: transparent; }
+	.note { position: absolute; font-family: Caveat, cursive; font-size: 24px; line-height: 1.05; color: var(--ink); }
+	svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+	path { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+<main>
+	<div class="tag" style="left:20px">Before</div>
+	<div class="frame" style="left:20px; width:280px; height:200px">
+		<img src="raw/before.png" width="1280" style="left:-40px; top:-60px" alt="">
+	</div>
+
+	<div class="tag" style="left:320px">After</div>
+	<div class="frame" style="left:320px; width:280px; height:200px">
+		<img src="raw/after.png" width="1280" style="left:-40px; top:-60px" alt="">
+	</div>
+
+	<svg>
+		<defs>
+			<marker id="head" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" refX="12" refY="8" orient="auto">
+				<path d="M3,2 L12,8 L4,13"/>
+			</marker>
+		</defs>
+		<!-- A gentle curve from the note to the element: M <start> C <control 1> <control 2> <end>. -->
+		<path d="M150,272 C146,240 132,210 112,182" marker-end="url(#head)"/>
+		<path d="M450,272 C446,240 432,210 412,182" marker-end="url(#head)"/>
+	</svg>
+	<div class="note" style="left:60px; top:274px">fades and grows in, 250 ms</div>
+	<div class="note" style="left:380px; top:274px">there on the click</div>
+</main>
+</body>
+</html>
