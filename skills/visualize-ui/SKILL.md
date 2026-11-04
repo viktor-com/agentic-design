@@ -9,7 +9,7 @@ People give a picture a few seconds. In that time it has to say **what to look a
 
 ## Read the brand first
 
-Open `DESIGN.md` (repo root or `docs/`) and use its **Graphics** section, its colours, and its fonts for everything around the screenshots. Graphics empty but Colour filled: take the ground from the page background and the note ink from the accent, and say so. No DESIGN.md: say so in one line, use neutral defaults (a light warm-grey ground, near-black text, one strong accent for notes), and offer the `brand` skill (`../brand/SKILL.md`) afterwards.
+Open `DESIGN.md` (repo root or `docs/`) and use its **Graphics** section, its colours, and its fonts for everything around the screenshots. Graphics names the annotation ink: a colour the product UI does not use, so a note never reads as part of the UI. Never the product accent. Graphics empty but Colour filled: take the ground from the page background, pick an ink outside the product palette, and say so. No DESIGN.md: say so in one line, use neutral defaults (a light warm-grey ground, near-black text, the template's proofing magenta for notes), and offer the `brand` skill (`../brand/SKILL.md`) afterwards.
 
 ## Choose the form by what you are showing
 
@@ -17,28 +17,36 @@ Open `DESIGN.md` (repo root or `docs/`) and use its **Graphics** section, its co
 | --- | --- |
 | Something static: layout, colour, spacing, copy, an empty or error state | A **Retina still** (2x), cropped to the subject |
 | Something that moves: a menu opening, an enter or exit, press feedback, hover timing | A **clip** at 2x, cropped to the element, CSS motion slowed about 5x, with "5x slower" written on it |
-| A flow across screens | **One recording** of the flow at real speed |
+| A flow across screens | **One recording** at real speed, brisk, from the first screen to the result with no step skipped |
 | Something that does not exist yet | **The live prototype**, clickable (see `prototype-ui`) |
-| A comparison: before and after, variants, themes, platforms | **Side by side in one image or one clip**, same crop, state, viewport, and theme on every side |
+| A comparison: before and after, variants, themes, platforms | **One image or one clip**: side by side for narrow subjects, stacked (before on top) for wide ones. Same crop, state, viewport, and theme on every side |
+| Options to choose between, even small ones like icons | **Render them all.** Described options get "can you show me?" |
 
 - **Show the real thing.** The product's own components with seed or fixture data, not a redraw.
-- **Crop to the subject,** with just enough around it to tell where on screen it is.
+- **Use realistic data** that is a little complex and exercises every new element. A toy example undersells the change.
+- **Crop to the subject,** with just enough around it to tell where on screen it is. A desktop app shot sits in a native-looking window with some surrounding UI, not a tight crop of one card.
+- **Why wide shots stack:** side by side, two wide screenshots shrink to unreadable in a chat column or PR at reading width, and many chat tools take one image per message.
 - **Never real customer data.** Capture from fixtures, seed data, or a demo account. Pictures travel.
+- **Label staged state.** A caption says "stubbed data" or "injected" for any state the product did not reach on its own. Reviewers trust a picture as the real product.
 
 ## Point at what matters
 
-- **Hand-drawn arrows with short handwritten notes,** as if sketched over the screenshot. One or two per frame.
-- **Each arrow ends on the exact element,** not near it. Take the element's box from the page, not from guessing.
-- **Notes sit in the margin nearest their target,** so arrows stay short and never cross the content or each other.
+- **Pick the style by audience.** For product and design readers: hand-drawn arrows with short handwritten notes, as if sketched over the screenshot. For technical, developer-facing graphics: straight leaders ending in a solid dot, with labels in the brand type; handwriting reads as hard to read and not technical there. One or two per frame either way.
+- **Notes in the annotation ink,** never the product accent: notes in the accent get read as real UI.
+- **Each arrow ends on the exact element,** not near it. Take the element's box from the page, not from guessing. For a copy change, underline the exact new words.
+- **Notes sit outside the frames, in the margin nearest their target,** so arrows stay short and never cross the content or each other.
 - **A note says the point in the reader's words** ("opens on the click", "Skip is visible from the start"), not a component name.
 - **No numbered pins with a legend.** Matching numbers to text is work the reader should not have to do.
+- **One level of annotation.** A screenshot someone gave you loses its stray marks first; annotate only the after side. A graphic of pictures that carry their own notes frames each picture, sits on a ground clearly different from them, and drops extra shadows and coloured verdict panels.
 - On a clip, the notes are a still transparent layer over the playing video.
 
-`references/annotated.html` is the composite template; `references/capture.md` has the commands for stills, clips, composites, GIFs, and hosting. The scripts in `scripts/` do the browser work.
+`references/annotated.html` is the composite template, with both annotation styles and the stacked layout described. Read `references/capture.md` before any capture: it has the commands for stills, clips, composites, GIFs, and hosting, and the traps that spoil a pair (stale code, a wrong before, missing fonts, dev chrome on screen). The scripts in `scripts/` do the browser work.
 
 ## Look before you send
 
-Open every image you made, and frames from across every clip. Check: the crop holds the subject, each arrow ends on its target, each side shows what its label says, nothing peeks in at a frame's edge. Fix and re-render; it takes seconds.
+Open every image you made, and frames from across every clip. Check: the crop holds the subject, each arrow ends on its target, each side shows what its label says, nothing peeks in at a frame's edge. Check the file really is 2x, the brand fonts and emoji rendered, the first frame is the right screen, and nothing predates the last change. Fix and re-render; it takes seconds.
+
+A claim that something moves, holds still, or does not jump needs per-frame sampling, not one still. Headless browsers without GPU can freeze an animation and make two frames identical. See "Proving motion" in `references/capture.md`.
 
 ## Where it lands
 
@@ -46,7 +54,9 @@ Open every image you made, and frames from across every clip. Check: the crop ho
 
 **Every PR that changes what a person sees carries its before and after,** planned with the change, not added when someone asks.
 
-- The before comes from the merge base (a second worktree), in the same state, viewport, and theme as the after.
+- The before comes from its own checkout at the merge base, in the same state, input, data, viewport, and theme as the after. Not a flag-off build of the branch, which already carries the PR's other changes, and never files swapped back in the working tree.
+- Freeze the code while the pair is captured, and name the commit it covers. After every design change, capture again, so no stale image survives in the body.
+- A pair for every case the change touches: each changed screen, each platform, short and long, with and without extras.
 - A static change is a pair of stills. A change in motion or timing is a pair of clips, in step.
 - Put one annotated composite in the PR body, right under the summary of the change. For motion, a GIF inline with the video linked beside it. Alt text says what the picture shows.
 - If the pair truly cannot be captured (no device, a state only production reaches), write one line saying so and why under the PR's testing notes, and carry on.
@@ -61,7 +71,7 @@ A page that takes the wider team from today's UI to a proposal. One self-contain
 
 ### An explainer
 
-For a system, a data result, or a flow explained to engineers or the team: one self-contained HTML page that reads like a good engineering blog post. Rules in [references/graphics.md](references/graphics.md), "Explainers".
+For a system, a data result, or a flow explained to engineers or the team: one self-contained HTML page that reads like a good engineering blog post, checked by a cold read from a fresh agent before anyone sees it. Rules in [references/graphics.md](references/graphics.md), "Explainers".
 
 ### Anywhere else
 

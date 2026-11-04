@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
-Annotated composite: one frame or several side by side, with handwritten notes and arrows.
-The example is a before and after.
+Annotated composite: one frame or several, with notes and arrows pointing at the change.
+The example is a before and after, side by side.
 
 Use: copy this file into a scratch folder next to raw/, edit the frames, tags, notes and arrow
 paths, then render the main element at 2x:   node <skill>/scripts/render.cjs annotated.html out.png
@@ -9,6 +9,24 @@ paths, then render the main element at 2x:   node <skill>/scripts/render.cjs ann
 Brand: replace the values in :root with DESIGN.md's Graphics section (ground, ink, text, muted,
 line) and set --font-tag / --font-body to its fonts. Load brand fonts with @font-face where their
 licence allows embedding; otherwise keep system fonts. Only the handwriting (Caveat) is fetched.
+
+Ink: a colour the product UI does not use, so a note never reads as part of the UI. Never the
+product accent. The default below is a proofing magenta; if the product uses magenta, pick another.
+
+Annotation style, by audience:
+- Product and design readers: handwritten notes and hand-drawn arrows (the default here).
+- Technical, developer-facing graphics: put class="technical" on <body>. Notes switch to the brand
+  type and arrows become straight leaders ending in a solid dot on the element. Keep the paths
+  of the style you use (class "hand" or "tech") and delete the others.
+- Never numbered pins with a legend: matching numbers to text is work for the reader.
+
+Layout:
+- Narrow subjects (a menu, a card, a row): side by side, before on the left, as in the example.
+- Wide subjects (a full window, a page, a wide panel): stack them, before on top. Put each tag
+  above its frame on one shared left edge, the frames one under the other at the same width, and
+  the notes in the right margin. Side-by-side wide shots shrink to unreadable in a chat column.
+- Either way: same crop, state, viewport and theme on both sides. Before always comes first.
+- Notes sit outside the frames, in the margin nearest their target.
 
 Coordinates are CSS pixels inside the main element. Size it to fit its content.
 
@@ -26,8 +44,8 @@ width and height, doubled, are the overlay position and crop size in the ffmpeg 
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
 	:root {
-		--ground: #f6f4f1;   /* page behind the frames */
-		--ink: #e5484d;      /* notes and arrows: one strong colour that reads on light and dark shots */
+		--ground: #f6f4f1;   /* page behind the frames; clearly different from the screenshots */
+		--ink: #d1007a;      /* notes and arrows: a colour the product UI does not use */
 		--text: #1c1b1f;
 		--muted: #6f6d78;
 		--line: #dcd8e0;     /* frame hairline */
@@ -45,6 +63,12 @@ width and height, doubled, are the overlay position and crop size in the ffmpeg 
 	.note { position: absolute; font-family: Caveat, cursive; font-size: 24px; line-height: 1.05; color: var(--ink); }
 	svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 	path { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+	#dot circle { fill: var(--ink); }
+
+	/* Technical style: labels in the brand type, straight leaders ending in a solid dot. */
+	body.technical .note { font-family: var(--font-tag); font-size: 13px; font-weight: 600; line-height: 1.3; letter-spacing: 0; }
+	body.technical path { stroke-width: 1.5; }
+	body:not(.technical) .tech, body.technical .hand { display: none; }
 </style>
 </head>
 <body>
@@ -64,10 +88,16 @@ width and height, doubled, are the overlay position and crop size in the ffmpeg 
 			<marker id="head" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" refX="12" refY="8" orient="auto">
 				<path d="M3,2 L12,8 L4,13"/>
 			</marker>
+			<marker id="dot" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="5" refY="5">
+				<circle cx="5" cy="5" r="3.5"/>
+			</marker>
 		</defs>
-		<!-- A gentle curve from the note to the element: M <start> C <control 1> <control 2> <end>. -->
-		<path d="M150,272 C146,240 132,210 112,182" marker-end="url(#head)"/>
-		<path d="M450,272 C446,240 432,210 412,182" marker-end="url(#head)"/>
+		<!-- Hand style: a gentle curve from the note to the element: M <start> C <control 1> <control 2> <end>. -->
+		<path class="hand" d="M150,272 C146,240 132,210 112,182" marker-end="url(#head)"/>
+		<path class="hand" d="M450,272 C446,240 432,210 412,182" marker-end="url(#head)"/>
+		<!-- Technical style: a straight leader, M <at the label> L <on the element>; the dot sits on the element. -->
+		<path class="tech" d="M112,272 L112,182" marker-end="url(#dot)"/>
+		<path class="tech" d="M412,272 L412,182" marker-end="url(#dot)"/>
 	</svg>
 	<div class="note" style="left:60px; top:274px">fades and grows in, 250 ms</div>
 	<div class="note" style="left:380px; top:274px">there on the click</div>

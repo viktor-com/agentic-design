@@ -10,6 +10,30 @@ V=<path to this skill>/scripts    # e.g. .claude/skills/visualize-ui/scripts or 
 
 They look for Playwright in the current directory first, then `NODE_PATH`. Run them from the app's folder if it has Playwright, or install it once in the scratch folder (`npm i -D playwright && npx playwright install chromium`). If that Playwright has no browser downloaded, they fall back to an installed Chrome; set `CHROME_PATH` to point at a specific binary.
 
+## Before you capture
+
+**Freeze the code.** No edits, merges or backend restarts while a set of captures runs: a hot reload halfway gives stills from two builds. Note the commit each set covers. If the branch moves, retake the whole set at one commit, and after any design change retake every picture it touches, so no image of a superseded version survives in a PR body.
+
+**Keep the run light and to itself.** Capture is the heaviest step on a shared machine.
+
+- One dev server and one browser at a time, on your own ports, debug port, display and temp folder. Default ports collide with other agents, and a small full temp disk makes headless Chrome fail with resource errors that look like app bugs.
+- Block hot reload in the capture run if other people or agents are editing the same checkout.
+- Send dev server and session logs to a file, not the console, and never print manifests or env dumps. When a subagent boots a dev session for you, tell it so: a failed start can echo credentials.
+- Stop the servers and browser when done. Never end a turn with capture jobs running in the background; they die with the session.
+
+**Clean the screen,** identically on both sides of a pair. Each of these has shipped in evidence and read as a bug.
+
+- Dev-only chrome: dev badges, reset pills, devtools and debug buttons, framework warning toasts. Pass their selectors to `--hide`.
+- Spellcheck squiggles. The scripts turn spellcheck off; elsewhere set `spellcheck="false"` on `<html>`.
+- Focus rings left by opening something from code: `--blur`, or end the steps with a blur.
+- First-run prompts and onboarding wizards (dismiss them in the steps), leftover test data in view, broken fixture avatars, text caught mid-shimmer, third-party requests (`--only-local`).
+- Headless browsers draw no pointer. `clip.cjs` draws one by default; `shot.cjs --pointer` for a hover still.
+- Windows from other processes in a desktop recording.
+
+**Load the real fonts.** Check the brand fonts, and an emoji font if the UI shows emoji, before the first still. The scripts print the fonts the page loaded and any that failed. A fallback font changes wrapping and weight, so a pair with the brand font on one side and a system font on the other shows a change that does not exist. If a capture must use a fallback, say so beside it. Missing emoji show as dots or boxes; install an emoji font on a headless machine.
+
+**Use realistic demo data** that is a little complex and exercises every new element. A three-step toy run undersells a change; if the first example never shows the new thing, add a second. Pick a seed account that lands in the full app, not on an onboarding wizard.
+
 ## Where the UI comes from
 
 Take the first that can show the subject. A picture needs the UI on screen in a known state, not a working backend.
@@ -28,7 +52,14 @@ git worktree add --detach ../before "$base"
 # install and start the same dev server there, on a different port
 ```
 
-For a change that is not committed yet, `HEAD` is the before. The two differ by the change and nothing else. Remove the worktree when done (`git worktree remove --force ../before`; `--force` because of the installed dependencies).
+For a change that is not committed yet, `HEAD` is the before. Remove the worktree when done (`git worktree remove --force ../before`; `--force` because of the installed dependencies).
+
+The two differ by the change and nothing else: same seed data, account, input, frozen clock, fonts, viewport and theme, and the before taken at the merge base of the current head. Check that the region outside the change is pixel-identical; a diff settles "unchanged" claims too.
+
+- **Never swap files in the working tree** to get the before. A swapped-in old file gets left in the diff, and file watchers can keep serving the stale module. If you must, confirm the dev server serves the restored file afterwards.
+- **A build of the branch with the flag off is not the before.** It already carries the PR's other changes. Use the merge base, or label the picture "flag off" and say how it differs from main.
+- **Each side runs on data and schema that match its own code.** When the old checkout cannot boot (its database schema is behind), take the cheapest route that does: run the old frontend against today's backend, or mount the real component in a throwaway page or story on the same seed data, with only the changed files taken from the merge base (not from main, which breaks imports). Match width, crop and top exactly, then delete the scaffolding. Say in the evidence when a side had to deviate.
+- **Plan a pair for every case the change touches:** left and right, short and long, with and without extras, each platform, flag on and off. One happy example misses the short bubble where the new bar overflows.
 
 To stage a state the seed data cannot reach, answer one request yourself in a steps module and let the rest through:
 
@@ -43,6 +74,10 @@ module.exports = async (page) => {
 
 Do not hand-mock the whole API to get a picture. The app needs true shapes from many endpoints before it settles.
 
+**Label staged state in the evidence.** A caption says "stubbed data", "injected", or "brought up by hand" for any state the product did not reach on its own, and timings from hand-driven steps are not product measurements. Reviewers trust a picture as the real product. When you report, state per image what is real and what is faked, and every place where what renders differs from the change description.
+
+**Hold a short-lived state on screen** to capture it: a loading button, a "Copied" flash, a half-full progress bar. Add latency to the one request (`await new Promise((r) => setTimeout(r, 1500))` before `route.continue()`), move the page clock (`page.clock`), or use a dev-only state switch. Reset the switch before you finish.
+
 ## A Retina still
 
 ```bash
@@ -50,7 +85,7 @@ node $V/shot.cjs http://localhost:3000/settings raw/after.png --steps steps.cjs 
 node $V/shot.cjs http://localhost:3001/settings raw/before.png --steps steps.cjs --box "[data-testid=plan-card]"
 ```
 
-It captures the whole viewport at 2x and prints the subject's box in CSS px. Crop in the composite, so both sides crop the same way, and take the arrow ends from the printed box. `--box` takes several selectors, comma separated with `|` (`--box "#menu|#save"`), and `--no-shot` measures without writing an image.
+Take every still after transitions have settled, in the light theme unless asked otherwise. It captures the whole viewport at 2x and prints the subject's box in CSS px, the fonts loaded, and the PNG's pixel size. Crop in the composite, so both sides crop the same way, and take the arrow ends from the printed box. `--box` takes several selectors, comma separated with `|` (`--box "#menu|#save"`), and `--no-shot` measures without writing an image.
 
 **From box to composite**, worked through. The capture is 1280 CSS px wide; the subject's box is `{"x":600,"y":180,"width":240,"height":120}`. To show it with 40 px of context in a frame at `left:20px; top:42px`:
 
@@ -60,7 +95,9 @@ It captures the whole viewport at 2x and prints the subject's box in CSS px. Cro
 
 Do the same arithmetic for the other side with its own box.
 
-Options: `--width`, `--height`, `--theme dark`, `--only-local` (blocks other origins except fonts, so a fixture route cannot call out).
+Options: `--width`, `--height`, `--theme dark`, `--only-local` (blocks other origins except fonts, so a fixture route cannot call out), `--hide "<sel>|<sel>"`, `--blur`, `--pointer`.
+
+A desktop app shot sits inside a native-looking window with enough surrounding UI to place it, not a tight crop of one card.
 
 A layout bug that shows at some widths only: sweep `page.setViewportSize` in a steps module, measure with `getBoundingClientRect`, then shoot at the width that shows it.
 
@@ -83,7 +120,13 @@ node $V/clip.cjs http://localhost:3000/inbox raw/after  --action action.cjs --sl
 
 Each prints `action-at <seconds>`. Cut each take there, less about half a second of lead-in, since page load differs between takes. Record the takes one after the other, with the same steps and waits, so they stay in step.
 
+The pointer is drawn by default (`--no-pointer` to drop it), and `--hide` works as for stills. Stage the take so the difference shows inside the clip: both sides idle look identical.
+
 Motion driven from JavaScript frame by frame is not slowed by the playback rate. Record it with `--slow 1` and stretch the clip: `ffmpeg -i in.webm -vf "setpts=5*PTS" -an out.webm`. Typing and other real-time flows stay at real speed, and the tag says so.
+
+**A flow walkthrough** runs from the very first screen to the result with no step skipped, marks steps that only one branch sees, and keeps a brisk pace. Look at its first frame: a take that opens on the wrong page for four seconds gets trimmed.
+
+Screen recordings come out at display resolution, not 2x. Check with `ffprobe -v error -show_entries stream=width,height -of csv=p=0 take.webm`.
 
 ## The annotated composite
 
@@ -113,7 +156,7 @@ ffmpeg -y -ss 4.45 -t 6.4 -i raw/before/*.webm -ss 4.39 -t 6.4 -i raw/after/*.we
   -c:v libvpx-vp9 -crf 30 -b:v 0 -an annotated/menu-before-after.webm
 ```
 
-A GIF plays inline in a PR body or a chat message; a webm usually does not. Keep it to a few megabytes: 12 to 15 frames a second, scaled down when the canvas is wide.
+A GIF plays inline in a PR body or a chat message; a webm usually does not. Keep it to a few megabytes: 12 to 15 frames a second, scaled down when the canvas is wide. A looping GIF loops seamlessly: the same objects throughout, frame one already mid-action, every change caused by something visible, the camera still. Lower frame rate at higher resolution is the better trade.
 
 ```bash
 ffmpeg -y -i annotated/menu-before-after.webm \
@@ -127,6 +170,27 @@ ffmpeg -i annotated/menu-before-after.webm -vf "fps=1/1.5,scale=900:-1,tile=4x1"
 ```
 
 It shows a take that started late, a crop that drifts, or something peeking in at a frame's edge.
+
+## Check every capture before you use it
+
+Headless captures fail silently. Before composing:
+
+- **Pixel size** is the viewport times the scale. Devtools-protocol screenshots, screencasts and some helpers ignore the device scale and write 1x; a 1x frame beside a 2x one shows in the composite.
+- **Fonts** are the brand fonts, labels are not blank, emoji are not boxes.
+- **First frame** shows the app, not a wizard or another page.
+- **Nothing predates the last fix.** A stale still draws false review comments.
+- **Motion really moved.** A browser without GPU or WebGL can freeze an animation, and two crops a few hundred ms apart that are byte-identical prove nothing about the product.
+- **A defect seen only in a screenshot** is confirmed live before you report it: a clipped capture or the script's own hover can create it.
+
+## Proving motion, pop-in and timing
+
+A claim that something moves, stands still, pops in, flashes or jumps needs per-frame evidence, not one still.
+
+- Sample the element's box and visible text every 50 to 200 ms through the transition, from first frame to settled, or run a `requestAnimationFrame` probe that records every frame. Count the frames that show the placeholder, neither, or both.
+- Or capture at 60 fps and diff consecutive crops.
+- Diff two crops a few hundred ms apart to show something moves (they differ) or holds (they match), on a machine that can actually render the motion.
+
+Performance claims carry p50 and p95 frame times, frames over budget and renders per interaction, before and after measured in one session on the same machine, best of several runs with the spread stated and both commits named. Throttled runs can differ by 2x between takes.
 
 ## Putting pictures in a pull request
 

@@ -4,7 +4,7 @@
 //
 // --transparent  keeps the background clear (for a notes layer over video: body.overlay)
 const path = require("node:path");
-const { load, launch, args } = require("./playwright.cjs");
+const { load, launch, args, pngSize } = require("./playwright.cjs");
 
 (async () => {
 	const { positional, flags } = args(process.argv.slice(2));
@@ -22,6 +22,7 @@ const { load, launch, args } = require("./playwright.cjs");
 	await page.goto("file://" + path.resolve(html), { waitUntil: "networkidle" }).catch(() => {});
 	await page.evaluate(() => document.fonts.ready);
 	await page.locator(flags.selector ?? "main").first().screenshot({ path: out, omitBackground: Boolean(flags.transparent) });
-	console.log(out);
+	const size = pngSize(out);
+	console.log(out, `${size.width}x${size.height}`);
 	await browser.close();
 })();
