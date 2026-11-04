@@ -17,7 +17,7 @@ Skip it when there is one obvious implementation. Four variants of a one-line ch
 
 ## 1. Read the rules, then see the real thing
 
-- **Read `DESIGN.md`** (repo root or `docs/`) and follow the `building-blocks` skill. Every variant uses the team's components, tokens, and fonts. Creative means layout, hierarchy, and interaction, not a new button. No DESIGN.md: say so, use the app's own look, and carry on.
+- **Read `DESIGN.md`** (repo root or `docs/`) and follow the `building-blocks` skill (installed next to this one: `../building-blocks/SKILL.md`). Every variant uses the team's components, tokens, and fonts. Creative means layout, hierarchy, and interaction, not a new button. No DESIGN.md: say so, use the app's own look, and carry on.
 - **Find the component that actually renders the surface**, not one that looks related.
 - **Look at it running.** That is the baseline every variant is compared against, and the thing you must not break.
 - **List the states.** Loaded, empty, loading, error, one item, many, long strings, narrow window. On mobile also small and large phones and the keyboard open. The states are where variants really differ.

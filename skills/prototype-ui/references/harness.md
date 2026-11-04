@@ -24,7 +24,8 @@ The orchestrator writes these first, before any variant is built:
     variant-a.tsx     # one builder each
     variant-b.tsx
     ...
-<app>/src/routes/dev-<slug>-lab.tsx   # the switcher (or Variants.stories.tsx)
+    main.tsx          # entry for the shareable export (see Export), mounts the switcher
+<app>/src/routes/dev-<slug>-lab.tsx   # the switcher route (or Variants.stories.tsx)
 ```
 
 Name the folder `dev-<slug>-lab` so it is easy to find at cleanup. Do not git-ignore it: some tools skip ignored files, and Tailwind's source scanning is one of them, so classes only the lab uses are never generated and the tiles lose their layout without an error. Leave it untracked and stage your real change by explicit path.
@@ -59,7 +60,7 @@ Either way, use the product's own components. A look-alike shell built for the l
 Two modes:
 
 1. **No `solo` parameter:** the comparison. A heading, one line on what to look at, then a grid. Each cell is the label, the one-line bet, and a scaled iframe.
-2. **`?solo=<id>`:** one variant at full size. This is each iframe's `src` and the screenshot target. A tile must never point at the grid itself, or it recurses.
+2. **`?solo=<id>`:** one variant at full size. This is each iframe's `src` and the screenshot target. A tile must never point at the grid itself, or it recurses. Read it as `new URLSearchParams(location.search).get("solo") ?? window.__LAB_SOLO__`, so the export can reuse the same code.
 
 Gate the route to local development using the project's existing pattern for dev-only routes. If auth middleware blocks signed-out visits, allow only this path, only in local development.
 
@@ -120,9 +121,51 @@ For anyone not at your machine, export the comparison to one HTML file:
 - No localhost URLs, no backend calls, no external runtime the host might block.
 - Keep the interactions. A lab export that cannot be clicked is a contact sheet; say so if that is all it can be.
 
-A simple build is a second Vite (or similar) config that bundles the lab's entry into one file, plus a small script that wraps each variant's bundle into a `srcdoc` tile.
+### 1. Build the lab into one HTML file
 
-Many hosts serve shared HTML under `Content-Security-Policy: sandbox` without `allow-same-origin`. There, the page and each `srcdoc` tile are separate opaque origins: a tile that reads `parent.document` throws, and `localStorage`, `sessionStorage`, `document.cookie`, and `navigator.locks` throw too. Real app code often touches these as it mounts. Put small in-memory stand-ins for them in an inline script at the top of each tile's document.
+Give the lab its own entry that mounts the switcher directly, not the app's router (a `srcdoc` frame's address is `about:srcdoc`, which no app route matches; use a memory router if the variants need one). Then bundle that entry into one file. With Vite:
+
+```bash
+npm i -D vite-plugin-singlefile
+```
+
+```ts
+// vite.lab.config.ts: keep the app's own plugins (React, Tailwind, aliases) and add singlefile
+import { defineConfig, mergeConfig } from "vite";
+import { viteSingleFile } from "vite-plugin-singlefile";
+import app from "./vite.config";
+
+export default mergeConfig(app, defineConfig({
+	plugins: [viteSingleFile()],
+	build: { outDir: "dist-lab", rollupOptions: { input: "lab.html" } },
+}));
+```
+
+```html
+<!-- lab.html -->
+<!doctype html><html><head><meta charset="utf-8"></head>
+<body><div id="root"></div><script type="module" src="/src/<area>/dev-<slug>-lab/main.tsx"></script></body></html>
+```
+
+`npx vite build -c vite.lab.config.ts` writes `dist-lab/lab.html`. If `vite.config` exports a function, call it with `{ mode: "production", command: "build" }` before merging. Other bundlers have a single-file option too; the goal is one HTML file with JS and CSS inlined.
+
+A `srcdoc` frame has no query string either, so the switcher picks its tile like this:
+
+```ts
+const solo = new URLSearchParams(location.search).get("solo") ?? (window as any).__LAB_SOLO__;
+```
+
+### 2. Pack the tiles
+
+```bash
+node <this skill's folder>/scripts/pack-lab.mjs lab.json <slug>-lab.html
+```
+
+`lab.json` names the title, the one-line intro, the tile size and scale, the bundle, and each tile's id, label, and bet (the script's header has an example). It writes one file: a grid of `srcdoc` tiles, each the bundle with `window.__LAB_SOLO__` set to its id, and a click on a label opens that tile at full size. A tile can name its own file instead, for a static screenshot page of a native-only variant.
+
+Many hosts serve shared HTML under `Content-Security-Policy: sandbox` without `allow-same-origin`. There, the page and each tile are separate opaque origins: a tile that reads `parent.document` throws, and `localStorage`, `sessionStorage`, `document.cookie`, and `navigator.locks` throw too. Real app code often touches these as it mounts. `pack-lab.mjs` puts in-memory stand-ins for all four at the top of every tile. Anything else the app needs from the parent page must be inside the bundle.
+
+### 3. Check it sandboxed
 
 A plain static server sends no such header, so passing there proves nothing. Check the export under the sandbox header first:
 
