@@ -23,11 +23,12 @@ Take the first that can show the subject. A picture needs the UI on screen in a 
 **The before is a second checkout** at the merge base, on another port:
 
 ```bash
-git worktree add --detach ../before "$(git merge-base origin/main HEAD)"
+base=$(git merge-base origin/HEAD HEAD 2>/dev/null || git merge-base origin/main HEAD 2>/dev/null || git rev-parse HEAD)
+git worktree add --detach ../before "$base"
 # install and start the same dev server there, on a different port
 ```
 
-The two differ by the change and nothing else. Remove the worktree when done (`git worktree remove ../before`).
+For a change that is not committed yet, `HEAD` is the before. The two differ by the change and nothing else. Remove the worktree when done (`git worktree remove --force ../before`; `--force` because of the installed dependencies).
 
 To stage a state the seed data cannot reach, answer one request yourself in a steps module and let the rest through:
 
@@ -49,7 +50,15 @@ node $V/shot.cjs http://localhost:3000/settings raw/after.png --steps steps.cjs 
 node $V/shot.cjs http://localhost:3001/settings raw/before.png --steps steps.cjs --box "[data-testid=plan-card]"
 ```
 
-It captures the whole viewport at 2x and prints the subject's box in CSS px. Crop in the composite, so both sides crop the same way, and take the arrow ends from the printed box.
+It captures the whole viewport at 2x and prints the subject's box in CSS px. Crop in the composite, so both sides crop the same way, and take the arrow ends from the printed box. `--box` takes several selectors, comma separated with `|` (`--box "#menu|#save"`), and `--no-shot` measures without writing an image.
+
+**From box to composite**, worked through. The capture is 1280 CSS px wide; the subject's box is `{"x":600,"y":180,"width":240,"height":120}`. To show it with 40 px of context in a frame at `left:20px; top:42px`:
+
+- frame size: `width: 240 + 2*40 = 320px`, `height: 120 + 2*40 = 200px`
+- image: `width="1280"`, offset `left: -(600 - 40) = -560px`, `top: -(180 - 40) = -140px`
+- the subject's centre in `main`: `x = 20 + 40 + 120 = 180`, `y = 42 + 40 + 60 = 142`. End the arrow on its edge, not its centre: for a note below, end at `y = 42 + 40 + 120 = 202`.
+
+Do the same arithmetic for the other side with its own box.
 
 Options: `--width`, `--height`, `--theme dark`, `--only-local` (blocks other origins except fonts, so a fixture route cannot call out).
 

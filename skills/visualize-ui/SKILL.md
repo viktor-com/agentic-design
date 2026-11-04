@@ -9,7 +9,7 @@ People give a picture a few seconds. In that time it has to say **what to look a
 
 ## Read the brand first
 
-Open `DESIGN.md` (repo root or `docs/`) and use its **Graphics** section, its colours, and its fonts for everything around the screenshots. No DESIGN.md: say so in one line, use neutral defaults (a light warm-grey ground, near-black text, one strong accent for notes), and offer the `brand` skill (`../brand/SKILL.md`) afterwards.
+Open `DESIGN.md` (repo root or `docs/`) and use its **Graphics** section, its colours, and its fonts for everything around the screenshots. Graphics empty but Colour filled: take the ground from the page background and the note ink from the accent, and say so. No DESIGN.md: say so in one line, use neutral defaults (a light warm-grey ground, near-black text, one strong accent for notes), and offer the `brand` skill (`../brand/SKILL.md`) afterwards.
 
 ## Choose the form by what you are showing
 

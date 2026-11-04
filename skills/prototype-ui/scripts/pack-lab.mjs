@@ -50,18 +50,23 @@ try{document.cookie}catch(e){var jar="";try{Object.defineProperty(document,"cook
 try{Object.defineProperty(navigator,"locks",{value:{request:function(n,o,cb){var f=typeof o==="function"?o:cb;return Promise.resolve(f({name:n}))},query:function(){return Promise.resolve({held:[],pending:[]})}},configurable:true})}catch(e){}
 })();</script>`;
 
-function tileDoc(tile) {
+// Each source file is stored once; the page composes each tile's document when it loads.
+const sources = [];
+const sourceIndex = new Map();
+function sourceOf(tile) {
 	const file = tile.file ?? spec.bundle;
 	if (!file) throw new Error(`tile ${tile.id} has no "file" and the spec has no "bundle"`);
-	const html = readFileSync(resolve(base, file), "utf8");
-	const head = `${SHIM}<script>window.__LAB_SOLO__=${JSON.stringify(tile.id)};</script>`;
-	if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, (m) => m + head);
-	return head + html;
+	const path = resolve(base, file);
+	if (!sourceIndex.has(path)) {
+		sourceIndex.set(path, sources.length);
+		sources.push(readFileSync(path, "utf8"));
+	}
+	return sourceIndex.get(path);
 }
 
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-const tiles = spec.tiles.map((tile) => ({ ...tile, doc: tileDoc(tile) }));
+const tiles = spec.tiles.map((tile) => ({ ...tile, source: sourceOf(tile) }));
 
 const out = `<!doctype html>
 <html lang="en">
@@ -108,7 +113,14 @@ ${tiles
 </div>
 <div id="solo"><nav><button id="back">All variants</button><strong id="solo-label"></strong></nav><iframe title="Variant at full size"></iframe></div>
 <script>
-const DOCS = ${JSON.stringify(tiles.map((t) => t.doc)).replace(/<\/script/gi, "<\\/script")};
+const SOURCES = ${JSON.stringify(sources).replace(/<\/script/gi, "<\\/script")};
+const SHIM = ${JSON.stringify(SHIM).replace(/<\/script/gi, "<\\/script")};
+const TILES = ${JSON.stringify(tiles.map((t) => ({ id: t.id, source: t.source })))};
+const DOCS = TILES.map((t) => {
+	const html = SOURCES[t.source];
+	const head = SHIM + "<scr" + "ipt>window.__LAB_SOLO__=" + JSON.stringify(t.id) + ";</scr" + "ipt>";
+	return /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, (m) => m + head) : head + html;
+});
 const LABELS = ${JSON.stringify(tiles.map((t) => t.label))};
 document.querySelectorAll(".frame iframe").forEach((f, i) => { f.srcdoc = DOCS[i]; });
 const solo = document.getElementById("solo");

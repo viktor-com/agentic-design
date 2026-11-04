@@ -1,10 +1,11 @@
 // A Retina still of a page, plus the box of the subject for cropping and arrow ends.
 //
 //   node shot.cjs <url> <out.png> [--width 1280] [--height 800] [--scale 2]
-//        [--theme light|dark] [--steps steps.cjs] [--box "<css selector>"] [--only-local]
+//        [--theme light|dark] [--steps steps.cjs] [--box "<selector>|<selector>"] [--no-shot] [--only-local]
 //
 // --steps    a module exporting async (page) => {} that brings the page to the state to show
-// --box      prints the selector's bounding box (CSS px) as JSON
+// --box      prints each selector's bounding box (CSS px) as JSON; separate several with |
+// --no-shot  measure only: print the boxes, write no image (pass - as <out.png>)
 // --only-local  blocks requests to other origins except fonts (useful on fixture routes)
 //
 // Captures the whole viewport on purpose: crop in the composite, so both sides of a comparison
@@ -33,8 +34,15 @@ const { load, launch, args, steps } = require("./playwright.cjs");
 	await page.goto(url, { waitUntil: "networkidle" }).catch(() => page.goto(url));
 	await steps(flags.steps)(page);
 	await page.evaluate(() => document.fonts.ready);
-	if (flags.box) console.log(JSON.stringify(await page.locator(flags.box).first().boundingBox()));
-	await page.screenshot({ path: out });
-	console.log(out);
+	if (flags.box) {
+		for (const selector of String(flags.box).split("|")) {
+			const box = await page.locator(selector.trim()).first().boundingBox({ timeout: 5000 }).catch(() => null);
+			console.log(JSON.stringify({ selector: selector.trim(), ...(box ?? { missing: true }) }));
+		}
+	}
+	if (!flags["no-shot"]) {
+		await page.screenshot({ path: out });
+		console.log(out);
+	}
 	await browser.close();
 })();

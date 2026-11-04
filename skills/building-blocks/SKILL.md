@@ -29,8 +29,10 @@ Useful searches:
 ```bash
 rg -l "from ['\"](@[^/]+/ui|.*/components/ui)" --type-add 'web:*.{ts,tsx,js,jsx,vue,svelte}' -t web | head
 rg -n "export (function|const) (Alert|Toast|Dialog|Modal|Sheet|Drawer|Menu|EmptyState|Skeleton|Spinner)\b"
-rg -n -- "--color-|--radius|--space" --glob '*.css' | head -40
+rg -n --glob '*.css' -e '--(color|radius|space|spacing|font|text|shadow)-' | head -40
 ```
+
+No `rg`? `grep -rnE` with the same patterns works, slower.
 
 Write what you found into DESIGN.md's Building blocks section, as a short list plus a table:
 

@@ -36,7 +36,7 @@ Name the folder `dev-<slug>-lab` so it is easy to find at cleanup. Do not git-ig
 // contract.tsx
 export const ITEMS = [ /* invented, unflattering: long names, nulls, 1 and 40 items */ ];
 
-export type LabState = "loaded" | "empty" | "loading" | "error";
+export type LabState = "loaded" | "empty" | "loading" | "error";   // keep only the states this surface can show
 
 export interface VariantProps {
 	items: typeof ITEMS;
@@ -63,6 +63,8 @@ Two modes:
 2. **`?solo=<id>`:** one variant at full size. This is each iframe's `src` and the screenshot target. A tile must never point at the grid itself, or it recurses. Read it as `new URLSearchParams(location.search).get("solo") ?? window.__LAB_SOLO__`, so the export can reuse the same code.
 
 Gate the route to local development using the project's existing pattern for dev-only routes. If auth middleware blocks signed-out visits, allow only this path, only in local development.
+
+**No file router, or no dev-only route pattern?** Use a second HTML entry instead: `dev-<slug>-lab.html` at the app root, loading the lab's `main.tsx`. Vite serves any HTML file in dev (`http://localhost:5173/dev-<slug>-lab.html?solo=a`) and leaves it out of the build unless it is listed as an input. Nothing in the app's routing changes. The same file is the entry for the export.
 
 ```tsx
 const TILES = [
@@ -178,4 +180,4 @@ Open it, check every tile renders and still reacts to clicks, then share it.
 
 ## Cleanup
 
-After the pick: delete the lab folder, the switcher route, the lab-only middleware or allowlist entry, and any lab build config. Regenerate route files with the project's own tooling if it has generated ones. Then check `git status` and the diff. Keep the exported HTML outside the repo, or wherever the team keeps review records.
+After the pick: delete the lab folder, the switcher route or lab HTML entry, the lab-only middleware or allowlist entry, the lab build config, and its output folder (`dist-lab/`). Regenerate route files with the project's own tooling if it has generated ones. Then check `git status` and the diff. Keep the exported HTML outside the repo, or wherever the team keeps review records.

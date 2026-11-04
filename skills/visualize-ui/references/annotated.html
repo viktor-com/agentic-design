@@ -4,13 +4,13 @@ Annotated composite: one frame or several side by side, with handwritten notes a
 The example is a before and after.
 
 Use: copy this file into a scratch folder next to raw/, edit the frames, tags, notes and arrow
-paths, then render <main> at 2x:   node <skill>/scripts/render.cjs annotated.html out.png
+paths, then render the main element at 2x:   node <skill>/scripts/render.cjs annotated.html out.png
 
 Brand: replace the values in :root with DESIGN.md's Graphics section (ground, ink, text, muted,
 line) and set --font-tag / --font-body to its fonts. Load brand fonts with @font-face where their
 licence allows embedding; otherwise keep system fonts. Only the handwriting (Caveat) is fetched.
 
-Coordinates are CSS pixels inside <main>. Size <main> to fit its content.
+Coordinates are CSS pixels inside the main element. Size it to fit its content.
 
 Stills: each .frame holds one <img>. Crop by sizing the frame and offsetting the image with
 negative left/top; set the image width to the capture's CSS width (the 2x PNG shown at 1x).

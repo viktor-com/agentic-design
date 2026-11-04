@@ -69,7 +69,6 @@ Licence notes: TODO (can the font files be embedded in a shared HTML page?)
 
 ## Imagery
 
-- Icons: TODO (set and size)
 - Illustration style: TODO
 - Logo use: TODO (which file, on which grounds, minimum size)
 
@@ -78,6 +77,8 @@ Licence notes: TODO (can the font files be embedded in a shared HTML page?)
 <!-- Filled in by the building-blocks skill. The real components and where they live. -->
 
 - Component library: TODO (package, path, how to import)
+- Tokens: TODO (where colour, type, spacing and radius come from in code)
+- Icons: TODO (the one icon set, and sizes)
 - Preview: TODO (Storybook command, a fixture route, or none)
 
 | Need | Use | Not |

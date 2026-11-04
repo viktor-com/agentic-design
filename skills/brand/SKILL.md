@@ -31,7 +31,10 @@ Read DESIGN.md before any UI, prototype, or visual work.
 3. **Fill each section with exact values.** Hex codes, font family names and where the files live, the radius and spacing scale. Note the source file next to each group, so the next person can check it is still in sync.
 4. **When sources disagree, write both and ask.** The app says one violet, the site another: ask the user which wins. Do not average them.
 5. **Ask only for what files cannot tell you.** Usually that is the product line, the principles, the voice, and the don'ts. Ask a few concrete questions in one message and offer your draft answer as the default, so the user can just say yes.
-6. **Leave gaps as `TODO`.** A made-up hex code is worse than an empty field, because every later task will trust it.
+6. **Leave measured values as `TODO` when unknown.** A made-up hex code is worse than an empty field, because every later task will trust it.
+7. **Fill Graphics from what you found.** Ground from the page background token, ink from the accent (or the danger colour if the accent is pale), fonts from the type section. visualize-ui and infographic read it, and an empty one makes them fall back to generic values.
+
+**No one to ask** (running unattended, or the user is away): draft Product, Principles, Voice and the Do / Don't walkthrough from the code, the README and the site, and mark each drafted line `(unconfirmed)`. Keep the starter rules as they are. Tell the user which lines need their eye. A marked draft is more useful to the next task than a page of TODOs.
 
 ## What makes it useful
 
