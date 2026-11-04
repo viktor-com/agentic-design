@@ -3,88 +3,228 @@
 <head>
 <meta charset="utf-8">
 <title>Infographic</title>
+<!-- Note font for hand-drawn notes. Swap for the one DESIGN.md Graphics names. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap">
 <style>
 	/* Replace these from DESIGN.md (Graphics, colour, type). */
 	:root {
-		--ground: #f6f6f4;
+		--ground: #efeee9;      /* Graphics ground: clearly different from the screenshots */
 		--surface: #ffffff;
 		--ink: #16181d;
-		--muted: #5d636e;
-		--line: #e3e4e8;
-		--accent: #2f6fed;
+		--muted: #646a75;
+		--line: #dcdde2;
+		--accent: #2f6fed;      /* product accent, used by the product UI and the "Now" bar */
 		--baseline: #b9bdc6;
+		--note: #d9480f;        /* annotation ink: a colour the product UI never uses */
 		--font-display: system-ui, -apple-system, "Segoe UI", sans-serif;
 		--font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
-		--radius: 16px;
+		--font-note: "Caveat", "Segoe Print", cursive;
+		--radius: 18px;
 	}
-	* { box-sizing: border-box; margin: 0; }
+	* { box-sizing: border-box; margin: 0; padding: 0; }
 	body { background: var(--ground); font-family: var(--font-body); color: var(--ink); }
-	main {
-		width: 1600px; height: 900px; padding: 64px;
-		display: grid; grid-template-columns: 560px 1fr; grid-template-rows: 1fr auto; gap: 40px 56px;
-		background: var(--ground);
+
+	/* Compact, near-square cut for a chat post or a PR. Width is fixed; height follows content, aim for 1:1 to 5:4. */
+	main { width: 1200px; padding: 56px; background: var(--ground); display: flex; flex-direction: column; gap: 26px; }
+	h1 { font-family: var(--font-display); font-size: 54px; line-height: 1.06; letter-spacing: -0.02em; max-width: 1000px; }
+
+	.case { position: relative; }
+	.head { display: flex; align-items: baseline; gap: 14px; font-size: 22px; margin-bottom: 12px; }
+	.head b { font-family: var(--font-display); font-size: 24px; }
+	.before .head { color: var(--muted); }
+	.before .head b { color: var(--muted); }
+	.frame {
+		width: 830px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+		overflow: hidden; position: relative;
 	}
-	.intro { display: flex; flex-direction: column; justify-content: center; gap: 20px; }
-	h1 { font-family: var(--font-display); font-size: 60px; line-height: 1.05; letter-spacing: -0.02em; }
-	.lede { font-size: 24px; line-height: 1.4; color: var(--muted); }
-	.shot {
-		background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-		padding: 24px; overflow: hidden; position: relative;
-		display: flex; align-items: center; justify-content: center;
-	}
-	.shot img { max-width: 100%; max-height: 100%; display: block; border-radius: 8px; }
-	/* Fade the bottom edge when the crop cuts mid-element. */
-	.shot.fade::after {
-		content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 80px;
+	.frame > img { display: block; width: 100%; }
+	.after .frame { max-height: 334px; } /* crop to the subject; the fade marks the cut */
+	/* Before is context: smaller (never under 0.75) and muted, so the new reads as the hero. */
+	.before .frame { zoom: 0.8; opacity: 0.82; }
+	/* Fade an edge where the crop cuts mid-element instead of slicing it. */
+	.frame.fade::after {
+		content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 44px;
 		background: linear-gradient(to bottom, transparent, var(--surface));
 	}
-	.placeholder { color: var(--muted); font-size: 20px; }
-	.cards { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-	.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px 28px; }
-	.card h2 { font-family: var(--font-display); font-size: 22px; line-height: 1.25; margin-bottom: 16px; }
-	.bar { display: grid; grid-template-columns: 120px 1fr 72px; align-items: center; gap: 12px; font-size: 16px; margin-top: 8px; }
+	.down { font-size: 30px; color: var(--muted); margin: -10px 0 -14px 24px; }
+
+	/* Notes sit outside the frame, in the gutter, in --note ink. */
+	.notes { position: absolute; left: 860px; top: 0; bottom: 0; width: 228px; }
+	.note { position: absolute; left: 30px; font-family: var(--font-note); font-size: 30px; line-height: 1.02; color: var(--note); }
+	svg.leaders { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+	svg.leaders path { fill: none; stroke: var(--note); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+	svg.leaders circle { fill: var(--note); }
+	/* Technical audience: straight leaders ending in a solid dot, labels in brand type. Set data-notes="straight" on main. */
+	main[data-notes="straight"] .note { font-family: var(--font-display); font-size: 19px; font-weight: 600; line-height: 1.25; }
+
+	.facts { display: grid; grid-template-columns: 1fr 420px; gap: 24px; align-items: stretch; }
+	ul.points { list-style: none; display: flex; flex-direction: column; justify-content: center; gap: 12px; font-size: 25px; line-height: 1.25; }
+	ul.points li { padding-left: 30px; position: relative; }
+	ul.points li::before { content: ""; position: absolute; left: 4px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+	.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 26px; }
+	.card h2 { font-family: var(--font-display); font-size: 22px; line-height: 1.2; margin-bottom: 12px; }
+	.bar { display: grid; grid-template-columns: 70px 1fr 104px; align-items: center; gap: 12px; font-size: 17px; margin-top: 8px; }
 	.bar .label { color: var(--muted); }
 	.bar .track { height: 14px; border-radius: 7px; background: var(--ground); }
-	.bar .fill { height: 100%; border-radius: 7px; background: var(--baseline); }
+	.bar .fill { display: block; height: 100%; border-radius: 7px; background: var(--baseline); }
 	.bar.now .fill { background: var(--accent); }
 	.bar .value { text-align: right; font-variant-numeric: tabular-nums; }
-	.note { font-size: 14px; color: var(--muted); margin-top: 12px; }
+	.bar.now .value { font-weight: 650; }
+	.counts { font-size: 15px; color: var(--muted); margin-top: 10px; }
+	.also { font-size: 19px; color: var(--muted); margin-top: -6px; }
+	.also b { color: var(--ink); font-weight: 600; }
+
+	/* ---- Demo product UI. Delete this block and put real 2x captures in the frames. ---- */
+	.app { font-size: 15px; color: #1d2128; }
+	.app .bar-top { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #eceef1; }
+	.app .search { flex: 1; display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 10px; background: #f3f4f6; color: #1d2128; }
+	.app .search::before { content: ""; width: 12px; height: 12px; border: 2px solid #8a909b; border-radius: 50%; }
+	.app .chips { display: inline-flex; gap: 8px; padding: 12px 18px 4px; }
+	.app .chip { height: 28px; padding: 0 12px; border-radius: 14px; border: 1px solid #dfe2e7; display: flex; align-items: center; font-size: 13px; color: #454b55; }
+	.app .chip.on { border-color: var(--accent); color: var(--accent); background: #eef3fe; }
+	.app .result { display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #f0f1f4; }
+	.app .avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 600; color: #fff; }
+	.app .meta { font-size: 13px; color: #6b717c; margin-bottom: 2px; }
+	.app .meta b { color: #1d2128; font-weight: 600; }
+	.app .tag { font-size: 11px; padding: 1px 6px; border-radius: 5px; background: #eceef1; color: #5c626d; margin-left: 6px; }
+	.app .snippet { line-height: 1.4; }
+	.app mark { background: #fff1b8; color: inherit; border-radius: 3px; padding: 0 2px; }
+	.app .file { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; padding: 4px 10px; border: 1px solid #e3e5ea; border-radius: 8px; font-size: 13px; }
+	.app .date { font-size: 12px; color: #8a909b; }
+	.app .empty { padding: 34px 18px 40px; text-align: center; color: #6b717c; }
+	.app .empty strong { display: block; color: #1d2128; font-size: 16px; margin-bottom: 4px; }
+	.app .suggest { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+	/* ---- End demo product UI. ---- */
 </style>
 </head>
 <body>
-<main>
-	<section class="intro">
-		<h1>Replies now land in 3 seconds, down from 9</h1>
-		<p class="lede">One or two lines on why this matters to the person using the product.</p>
+<main data-notes="hand">
+	<h1>Search now finds the message, not just the chat</h1>
+
+	<!-- Before: what people actually had, often the feature's absence. Same query, data, viewport and theme as Now. -->
+	<section class="case before">
+		<p class="head"><b>Before</b> Only chat names matched</p>
+		<div class="frame">
+			<div class="app">
+				<div class="bar-top"><span class="search">vendor contract renewal</span></div>
+				<div class="empty">
+					<strong>No chats named "vendor contract renewal"</strong>
+					Try a shorter chat name
+					<div class="suggest"><span class="chip">#vendors</span><span class="chip">#legal-review</span></div>
+				</div>
+			</div>
+		</div>
 	</section>
 
-	<!-- Swap the placeholder for <img src="shot.png" alt="..."> captured at 2x. -->
-	<section class="shot fade">
-		<span class="placeholder">Screenshot of the real UI, 2x</span>
+	<p class="down" aria-hidden="true">&darr;</p>
+
+	<!-- Now: the louder panel, at full scale. Notes go on this side only. -->
+	<section class="case after">
+		<p class="head"><b>Now</b> Every message and file is searched</p>
+		<div class="frame fade">
+			<div class="app">
+				<div class="bar-top"><span class="search">vendor contract renewal</span></div>
+				<div class="chips" id="t-chips">
+					<span class="chip on">From: Priya Raman</span><span class="chip">Any date</span><span class="chip">All chats</span><span class="chip on">Include archived</span>
+				</div>
+				<div class="result">
+					<span class="avatar" style="background:#7a5af8">PR</span>
+					<div>
+						<p class="meta"><b>Priya Raman</b> in #legal-review</p>
+						<p class="snippet" id="t-mark">Sent the <mark>vendor contract</mark> back with our redlines. <mark>Renewal</mark> is auto-on unless we give 60 days notice.</p>
+					</div>
+					<span class="date">Oct 28</span>
+				</div>
+				<div class="result">
+					<span class="avatar" style="background:#12a594">PR</span>
+					<div>
+						<p class="meta"><b>Priya Raman</b> in #vendors-2025<span class="tag">Archived</span></p>
+						<p class="snippet">Last year's <mark>renewal</mark> went through finance first, see the thread.</p>
+						<span class="file" id="t-file">PDF&nbsp; <span><mark>vendor</mark>-<mark>contract</mark>-v3.pdf</span></span>
+					</div>
+					<span class="date">Mar 3</span>
+				</div>
+				<div class="result">
+					<span class="avatar" style="background:#7a5af8">PR</span>
+					<div>
+						<p class="meta"><b>Priya Raman</b> in #ops</p>
+						<p class="snippet">Flagging the <mark>contract renewal</mark> date for the cleaning vendor too.</p>
+					</div>
+					<span class="date">Feb 11</span>
+				</div>
+			</div>
+		</div>
+		<div class="notes">
+			<!-- Two to four notes, in the order of their targets, each on something new. -->
+			<p class="note" data-for="t-chips">narrow by person or date</p>
+			<p class="note" data-for="t-mark">the words you typed, lit up</p>
+			<p class="note" data-for="t-file">file names match</p>
+		</div>
+		<svg class="leaders" aria-hidden="true"></svg>
 	</section>
 
-	<section class="cards" id="cards"></section>
+	<section class="facts">
+		<ul class="points">
+			<li>Searches inside messages and file names</li>
+			<li>Filter by person, date or chat</li>
+			<li>Archived chats included</li>
+		</ul>
+		<article class="card" id="metric"></article>
+	</section>
+
+	<p class="also"><b>Also:</b> Esc clears the search box</p>
 </main>
 <script>
-	// Each card compares a baseline with now. Bars are scaled to the larger value in the card.
-	const cards = [
-		{ title: "Replies arrive three times faster", unit: "s", rows: [["Before", 9.0], ["Now", 3.0]], note: "Median of 200 runs each" },
-		{ title: "Search finds it on the first try", unit: "/50", rows: [["Before", 12], ["Now", 41]], note: "41 of 50, up from 12 of 50" },
-		{ title: "Setup takes a minute, not five", unit: " min", rows: [["Before", 5], ["Now", 1]], note: "Timed on a fresh account, 10 runs" },
-	];
-	const root = document.getElementById("cards");
-	for (const card of cards) {
-		const max = Math.max(...card.rows.map(([, v]) => v));
-		const el = document.createElement("article");
-		el.className = "card";
-		el.innerHTML = `<h2>${card.title}</h2>` + card.rows.map(([label, value], i) => `
-			<div class="bar${i === card.rows.length - 1 ? " now" : ""}">
-				<span class="label">${label}</span>
-				<span class="track"><span class="fill" style="display:block;width:${(value / max) * 100}%"></span></span>
-				<span class="value">${value}${card.unit}</span>
-			</div>`).join("") + `<p class="note">${card.note}</p>`;
-		root.appendChild(el);
+	// One comparison. Say what is counted, positive first, with the raw counts. Bars scale to the denominator.
+	const metric = {
+		title: "Right message in the top 3",
+		of: 50,
+		rows: [["Before", 19], ["Now", 46]],
+		counts: "50 real queries from the team's own chats",
+	};
+	const card = document.getElementById("metric");
+	card.innerHTML = `<h2>${metric.title}</h2>` + metric.rows.map(([label, value], i) => `
+		<div class="bar${i === metric.rows.length - 1 ? " now" : ""}">
+			<span class="label">${label}</span>
+			<span class="track"><span class="fill" style="width:${(value / metric.of) * 100}%"></span></span>
+			<span class="value">${value} of ${metric.of}</span>
+		</div>`).join("") + `<p class="counts">${metric.counts}</p>`;
+
+	// Draw each note's leader to its target, measured from the layout so arrows always land.
+	// Notes are spaced down the gutter in the order of their targets.
+	function drawLeaders() {
+		const caseEl = document.querySelector(".case.after");
+		const svg = caseEl.querySelector("svg.leaders");
+		const straight = document.querySelector("main").dataset.notes === "straight";
+		const box = caseEl.getBoundingClientRect();
+		const notes = [...caseEl.querySelectorAll(".note")];
+		let floor = 0;
+		for (const note of notes) {
+			const t = document.getElementById(note.dataset.for).getBoundingClientRect();
+			const ty = t.top + t.height / 2 - box.top;
+			const top = Math.max(floor, ty - note.offsetHeight / 2);
+			note.style.top = `${top}px`;
+			floor = top + note.offsetHeight + 14;
+		}
+		svg.innerHTML = "";
+		for (const note of notes) {
+			const t = document.getElementById(note.dataset.for).getBoundingClientRect();
+			const n = note.getBoundingClientRect();
+			const x1 = n.left - box.left - 8, y1 = n.top - box.top + n.height / 2;
+			const x2 = t.right - box.left + 8, y2 = t.top - box.top + t.height / 2;
+			if (straight) {
+				svg.insertAdjacentHTML("beforeend", `<path d="M${x1} ${y1} H${(x1 + x2) / 2} L${x2} ${y2}"/><circle cx="${x2}" cy="${y2}" r="5"/>`);
+			} else {
+				// A loose hand-drawn curve with an open arrowhead at the target.
+				const cx = (x1 + x2) / 2, cy = Math.min(y1, y2) - 18;
+				const ang = Math.atan2(y2 - cy, x2 - cx), h = 13;
+				const a1 = `${x2 - h * Math.cos(ang - 0.45)} ${y2 - h * Math.sin(ang - 0.45)}`;
+				const a2 = `${x2 - h * Math.cos(ang + 0.45)} ${y2 - h * Math.sin(ang + 0.45)}`;
+				svg.insertAdjacentHTML("beforeend", `<path d="M${x1} ${y1} Q${cx} ${cy} ${x2} ${y2}"/><path d="M${a1} L${x2} ${y2} L${a2}"/>`);
+			}
+		}
 	}
+	document.fonts.ready.then(drawLeaders);
 </script>
 </body>
 </html>

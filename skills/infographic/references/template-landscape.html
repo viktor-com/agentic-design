@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Infographic, landscape</title>
+<style>
+	/* Replace these from DESIGN.md (Graphics, colour, type). */
+	:root {
+		--ground: #f6f6f4;
+		--surface: #ffffff;
+		--ink: #16181d;
+		--muted: #5d636e;
+		--line: #e3e4e8;
+		--accent: #2f6fed;
+		--baseline: #b9bdc6;
+		--font-display: system-ui, -apple-system, "Segoe UI", sans-serif;
+		--font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+		--radius: 16px;
+	}
+	* { box-sizing: border-box; margin: 0; padding: 0; }
+	body { background: var(--ground); font-family: var(--font-body); color: var(--ink); }
+	main {
+		width: 1600px; height: 900px; padding: 64px;
+		display: grid; grid-template-columns: 560px 1fr; grid-template-rows: 1fr auto; gap: 40px 56px;
+		background: var(--ground);
+	}
+	.intro { display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+	h1 { font-family: var(--font-display); font-size: 60px; line-height: 1.05; letter-spacing: -0.02em; }
+	/* Landscape cut: slides and wide embeds at 1600x900; a social preview at 1200x630 keeps only the headline and the product. */
+	ul.points { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 24px; line-height: 1.3; }
+	ul.points li { padding-left: 28px; position: relative; }
+	ul.points li::before { content: ""; position: absolute; left: 4px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+	.shot {
+		background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+		padding: 24px; overflow: hidden; position: relative;
+		display: flex; align-items: center; justify-content: center;
+	}
+	.shot img { max-width: 100%; max-height: 100%; display: block; border-radius: 8px; }
+	/* Fade the bottom edge when the crop cuts mid-element. */
+	.shot.fade::after {
+		content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 80px;
+		background: linear-gradient(to bottom, transparent, var(--surface));
+	}
+	.placeholder { color: var(--muted); font-size: 20px; }
+	.cards { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+	.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px 28px; }
+	.card h2 { font-family: var(--font-display); font-size: 22px; line-height: 1.25; margin-bottom: 16px; }
+	.bar { display: grid; grid-template-columns: 120px 1fr 72px; align-items: center; gap: 12px; font-size: 16px; margin-top: 8px; }
+	.bar .label { color: var(--muted); }
+	.bar .track { height: 14px; border-radius: 7px; background: var(--ground); }
+	.bar .fill { height: 100%; border-radius: 7px; background: var(--baseline); }
+	.bar.now .fill { background: var(--accent); }
+	.bar .value { text-align: right; font-variant-numeric: tabular-nums; }
+	.note { font-size: 14px; color: var(--muted); margin-top: 12px; }
+</style>
+</head>
+<body>
+<main>
+	<section class="intro">
+		<h1>Replies now land in 3 seconds, down from 9</h1>
+		<ul class="points">
+			<li>Answers start while the tools still run</li>
+			<li>Files are read once per chat</li>
+			<li>Same answers: 196 of 197 graded right</li>
+		</ul>
+	</section>
+
+	<!-- Swap the placeholder for <img src="shot.png" alt="..."> captured at 2x. -->
+	<section class="shot fade">
+		<span class="placeholder">Screenshot of the real UI, 2x</span>
+	</section>
+
+	<section class="cards" id="cards"></section>
+</main>
+<script>
+	// Each card compares a baseline with now and says what it counts. Bars scale to the larger value in the card.
+	const cards = [
+		{ title: "Replies arrive three times faster", unit: "s", rows: [["Before", 9.0], ["Now", 3.0]], note: "Median reply time, 200 runs each" },
+		{ title: "Search finds it on the first try", unit: "/50", rows: [["Before", 12], ["Now", 41]], note: "41 of 50 test queries, up from 12 of 50" },
+		{ title: "Setup takes a minute, not five", unit: " min", rows: [["Before", 5], ["Now", 1]], note: "New workspace to first reply, 10 runs" },
+	];
+	const root = document.getElementById("cards");
+	for (const card of cards) {
+		const max = Math.max(...card.rows.map(([, v]) => v));
+		const el = document.createElement("article");
+		el.className = "card";
+		el.innerHTML = `<h2>${card.title}</h2>` + card.rows.map(([label, value], i) => `
+			<div class="bar${i === card.rows.length - 1 ? " now" : ""}">
+				<span class="label">${label}</span>
+				<span class="track"><span class="fill" style="display:block;width:${(value / max) * 100}%"></span></span>
+				<span class="value">${value}${card.unit}</span>
+			</div>`).join("") + `<p class="note">${card.note}</p>`;
+		root.appendChild(el);
+	}
+</script>
+</body>
+</html>
