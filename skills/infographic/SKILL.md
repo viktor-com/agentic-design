@@ -17,7 +17,7 @@ Use the logo only where DESIGN.md allows it, at the size and spacing it gives. I
 
 ## Information hierarchy first
 
-- One product point. Write it as a headline that states it: "Replies land in a third of the time", not "Faster replies".
+- One product point. Write it as a headline that states it: "Replies now land in 3 seconds, down from 9", not "Faster replies".
 - Its picture goes large: the real UI that shows the point.
 - Cards are headed by a takeaway sentence, not a label. "Search finds it on the first try" beats "Search accuracy".
 - The least important detail goes last and smallest. Internals belong in a linked long version.
