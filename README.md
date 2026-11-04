@@ -14,6 +14,7 @@ npx skills add viktor-com/agentic-design
 - **building-blocks**: makes the agent use the team's real components and tokens instead of inventing new ones.
 - **infographic**: makes a one-frame graphic for a PR, a launch or a result, with real UI and numbers against a named baseline.
 - **prototype-ui**: runs a prototype lab, a few clickable variants next to today's UI, picked and iterated over rounds.
+- **design-review**: reviews built UI like a picky designer before anyone sees it: every state, measured alignment, copy, clicks.
 - **visualize-ui**: turns UI changes, data and flows into annotated stills, slowed clips, infographics and explainer pages.
 
 ## Example
