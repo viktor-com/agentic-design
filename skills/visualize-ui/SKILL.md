@@ -53,11 +53,7 @@ Open every image you made, and frames from across every clip. Check: the crop ho
 
 ### An infographic or announcement graphic
 
-This is an editorial piece, not an annotated screenshot. [references/graphics.md](references/graphics.md) has the rules. The core of it:
-
-- Lead with the one product point and its picture. Hierarchy first; equal-weight sections hide the point.
-- One landscape frame that reads in a chat preview. Link the long version.
-- Every number is a comparison with its baseline named ("3x cheaper than building from scratch"). A lone big number is decoration.
+This is an editorial piece, not an annotated screenshot. Use the [`infographic`](../infographic/SKILL.md) skill: it has the rules, a template, and the checklist.
 
 ### A design proposal page
 

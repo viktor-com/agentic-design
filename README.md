@@ -12,6 +12,7 @@ npx skills add viktor-com/agentic-design
 
 - **brand**: writes the project's `DESIGN.md`, the one file every visual task reads first.
 - **building-blocks**: makes the agent use the team's real components and tokens instead of inventing new ones.
+- **infographic**: makes a one-frame graphic for a PR, a launch or a result, with real UI and numbers against a named baseline.
 - **prototype-ui**: runs a prototype lab, a few clickable variants next to today's UI, picked and iterated over rounds.
 - **visualize-ui**: turns UI changes, data and flows into annotated stills, slowed clips, infographics and explainer pages.
 
