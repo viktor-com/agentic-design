@@ -8,10 +8,14 @@ A lab is one view per variant plus a comparison that shows them all. Pick the sm
 | --- | --- |
 | Web UI, or shared UI that renders on the web | A local-only lab route in the app, with an iframe grid |
 | Components with a working Storybook | A stories file with one story per variant and a grid story |
-| Desktop or mobile UI that renders faithfully in a browser | The web preview at device sizes (1440 by 900, 390 by 844) |
+| Desktop or mobile UI that renders faithfully in a browser | The web preview at the real device sizes (see Frame size; often 1440 by 900 and 390 by 844) |
 | Truly native behaviour: windows, tray, safe areas, keyboard | One native session, one screenshot per variant, a labelled contact sheet |
 
-Do not install Storybook or a new framework for a lab. Use what the project has. Run one preview server for the whole lab, owned by the orchestrator. If the chosen harness will not boot, drop to the next row and say why.
+Do not install Storybook or a new framework for a lab. Use what the project has. Run one preview server for the whole lab, owned by the orchestrator, and hand its URL to every builder. If the chosen harness will not boot, drop to the next row and say why.
+
+## Frame size
+
+Size every tile to what people really see: the product's default window and panel widths, and the device most users have (ask analytics for a width breakdown when it is reachable). A 400 px pane against a 560 px default makes every tile the cramped case. Show the full app frame around the change, not a crop of it, and add a phone tile when the surface ships on phones. Write the size in the lab's intro line.
 
 ## Files
 
@@ -19,7 +23,7 @@ The orchestrator writes these first, before any variant is built:
 
 ```
 <app>/src/<area>/dev-<slug>-lab/
-    contract.tsx      # shared props and mock data
+    contract.tsx      # shared props, scenes, actions, mock data, exported building pieces
     today.tsx         # today's UI, mounted with the same contract
     variant-a.tsx     # one builder each
     variant-b.tsx
@@ -46,6 +50,14 @@ export interface VariantProps {
 
 Invent the data. Never copy real customer data into a lab: the export gets shared. Pin the date if anything shows relative time, or tiles differ by "3 minutes ago".
 
+The contract is where most lab trouble starts, because every builder reads it and none may change it. Before dispatching builders, walk each variant's likely interactions against it:
+
+- **Actions.** Every slot a variant fills gets its callbacks (`onCancel`, `onSubmit`, `onOpen`). Builders without one read handlers off internal props or click hidden real buttons.
+- **Scenes.** Every state the variants must show, named and switchable: loaded, empty, loading, error, mid-flow. If a placeholder or empty input is under redesign, at least one scene leaves it empty; a draft prefilled in every scene hides the very thing being redesigned. State must survive the fake engine's timers.
+- **Building pieces.** Export the real row components, state helpers, and formatters the variants need. Without them, variants restyle the real component through descendant selectors or copy its logic inline, which breaks when the markup changes.
+- **Fixtures that trigger every edge.** Enough rows to scroll, enough people to fill a sheet, a long title, a second user for shared views. A three-person seed cannot show the overflow state.
+- **Copy without directions.** Shared strings must not say "above" or "below": layout variants move the thing being pointed at, and every variant has to override the string.
+
 ### How much each tile mounts
 
 Choose by what the decision is about:
@@ -61,6 +73,13 @@ Two modes:
 
 1. **No `solo` parameter:** the comparison. A heading, one line on what to look at, then a grid. Each cell is the label, the one-line bet, and a scaled iframe.
 2. **`?solo=<id>`:** one variant at full size. This is each iframe's `src` and the screenshot target. A tile must never point at the grid itself, or it recurses. Read it as `new URLSearchParams(location.search).get("solo") ?? window.__LAB_SOLO__`, so the export can reuse the same code.
+
+**Load each tile on its own.** Import variants lazily by id, inside an error boundary, so one builder's broken import or half-saved file blanks only its own tile, not the whole lab:
+
+```tsx
+const LOADERS = { today: () => import("./today"), a: () => import("./variant-a"), b: () => import("./variant-b") };
+const Solo = lazy(LOADERS[solo as keyof typeof LOADERS]);   // render inside <ErrorBoundary><Suspense>
+```
 
 Gate the route to local development using the project's existing pattern for dev-only routes. If auth middleware blocks signed-out visits, allow only this path, only in local development.
 
@@ -104,15 +123,29 @@ One story per variant plus a grid story whose tiles load `/iframe.html?id=<story
 
 On one device or window: open variant A, wait for it to settle, screenshot. Repeat for each, same size and state. Compose one HTML page with the screenshots in a labelled grid, and say on it that the tiles are static. Keep the live session up so the developer can try them.
 
-## Check before showing
+## Builders look at their own tile
 
-Screenshot every `?solo=` URL directly, then the grid. A broken tile and a slow tile look the same in the grid; a direct hit tells them apart. Give a grid of full-app tiles ten seconds to settle before believing a blank tile.
+Each builder screenshots its own `?solo=<id>` on the orchestrator's server, in light, dark, and one mid-flow frame, and fixes its own states before reporting. It does not start a server and does not run repo-wide checks. Builders that were told never to render shipped tiles nobody had seen, including a blank 2,600 px box; builders that could look found and reported a broken shared tooltip before anyone else did.
+
+Their report says what they saw, what they could not reach, and any gap in the shared layer.
+
+## Look and fix before showing
+
+Screenshot every `?solo=` URL directly, then the grid. A broken tile and a slow tile look the same in the grid; a direct hit tells them apart. Give a grid of full-app tiles ten seconds to settle before believing a blank tile, and wait for the dev server to finish reloading: other agents' saves restart it, and a shot mid-reload catches a 500.
+
+Then a fresh-eyes pass per tile, ideally by an agent that did not build it: judge hierarchy, copy, alignment, and every scene, fix, and look again until a round finds nothing. Check every tile sits in an identical frame; a shared control bar that wraps differently per tile changes the frame height. The `design-review` skill has the full checklist.
 
 Common causes of a broken tile:
 
 - A control with no handler renders as an inert element that looks normal. Variants must hold local state.
 - Mocks did not reach the iframe's document (a mock service worker registers per document).
 - A feature flag the surface needs is not set in the lab.
+- **Collapsed, blank, or wrong theme: read computed styles first.** Utility classes can compute to zero in a lab build (line-height and max-width keywords have done it), leaving single-line text invisible or a box zero wide. Theme tokens are often scoped to the root, so a theme class on a subtree does nothing, and some harnesses re-add the light class.
+- The brand font did not load, so every tile is in a fallback. Check `document.fonts.check` or the computed font family before trusting a batch of shots.
+
+## Agents sharing a machine
+
+Builders, checkers, and other sessions often share one box. Give each agent its own browser profile, debugging port, display, and temp directory, and keep temp off a small shared tmpfs; headless browsers fail with resource errors when it fills. When memory is tight, run one dev server at a time. Send server and session logs to files, never to the console, and never print manifests or env dumps: start-up errors can echo secret values.
 
 ## Export
 
@@ -122,6 +155,7 @@ For anyone not at your machine, export the comparison to one HTML file:
 - Each tile becomes an iframe with `srcdoc` holding a complete document, built in full on the parent page.
 - No localhost URLs, no backend calls, no external runtime the host might block.
 - Keep the interactions. A lab export that cannot be clicked is a contact sheet; say so if that is all it can be.
+- Keep every tile, losers included. The export is the record people reopen when they reverse a pick.
 
 ### 1. Build the lab into one HTML file
 
@@ -180,4 +214,4 @@ Open it, check every tile renders and still reacts to clicks, then share it.
 
 ## Cleanup
 
-After the pick: delete the lab folder, the switcher route or lab HTML entry, the lab-only middleware or allowlist entry, the lab build config, and its output folder (`dist-lab/`). Regenerate route files with the project's own tooling if it has generated ones. Then check `git status` and the diff. Keep the exported HTML outside the repo, or wherever the team keeps review records.
+After the pick, archive first: re-export the final round with every tile, and save the lab source outside the repo (a patch of the lab files or a copied folder), so a reversed pick or a new round starts from the old tiles instead of from nothing. Then delete the lab folder, the switcher route or lab HTML entry, the lab-only middleware or allowlist entry, the lab build config, and its output folder (`dist-lab/`). Regenerate route files with the project's own tooling if it has generated ones. Then check `git status` and the diff. Keep the exported HTML outside the repo, or wherever the team keeps review records.
