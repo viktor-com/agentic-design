@@ -51,7 +51,7 @@ None of this is our brand. Your colours, fonts and voice come from your own
 
 <p align="center">
   <img src=".github/banner/3-heemskerck-st-luke.jpg" width="100%" alt="St Luke painting the Virgin"><br>
-  <sub><i>St Luke Painting the Virgin</i>, Maarten van Heemskerck, 1532<br>One picture, reworked until it is right. That is what design review is for.</sub>
+  <sub><i>St Luke Painting the Virgin</i>, Maarten van Heemskerck, 1532<br>The painter checks the canvas against his sitter, as design review checks the build against the design.</sub>
 </p>
 
 ## License
