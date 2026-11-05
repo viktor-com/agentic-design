@@ -1,11 +1,12 @@
 <p align="center">
   <img src=".github/banner/1-van-haecht-gallery.jpg" width="100%" alt="agentic-design">
 </p>
-<p align="center"><sub><i>Willem van Haecht, The Gallery of Cornelis van der Geest, 1628, hung with our own work</i></sub></p>
+<p align="center"><sub><i>Willem van Haecht's gallery from 1628. We rehung a few walls with things our agents made.</i></sub></p>
 
-How we do design with coding agents, packaged as skills. They give an agent the
-team's taste and rules, so it builds options worth picking from and shows its
-work in pictures people can read at a glance.
+This is how we design with coding agents, bottled up as skills. Install them and
+your agent picks up your team's taste: it tries a few directions before settling
+on one, checks its own work like a fussy designer would, and shows you what
+changed in a picture instead of a paragraph.
 
 ```bash
 npx skills add viktor-com/agentic-design
@@ -23,7 +24,7 @@ npx skills add viktor-com/agentic-design
 <p align="center">
   <img src=".github/banner/2-stradanus-workshop.jpg" width="100%" alt="A painter's workshop with apprentices at work">
 </p>
-<p align="center"><sub><i>Jan Collaert II after Jan van der Straet (Stradanus), Color Olivi (Nova Reperta), c. 1590. A workshop where every hand has one job.</i></sub></p>
+<p align="center"><sub><i>A painter's workshop, engraved around 1590 by Jan Collaert II after Stradanus. Everyone has one job, which is roughly how a lab runs: one agent per variant.</i></sub></p>
 
 ## Example
 
@@ -45,13 +46,13 @@ the reason, and keeps going without waiting. It reviews the result, then opens t
 PR with an annotated before/after. Reply with a label ("B, but with C's header") at
 any point to switch.
 
-None of the skills carry a brand. Colours, fonts and voice all come from your
+None of this is our brand. Your colours, fonts and voice come from your own
 `DESIGN.md`.
 
 <p align="center">
   <img src=".github/banner/3-heemskerck-st-luke.jpg" width="100%" alt="St Luke painting the Virgin">
 </p>
-<p align="center"><sub><i>Maarten van Heemskerck, St Luke Painting the Virgin, 1532. One picture, worked over until it's right.</i></sub></p>
+<p align="center"><sub><i>Maarten van Heemskerck's St Luke, 1532, still fussing over one portrait. That's design review.</i></sub></p>
 
 ## License
 
