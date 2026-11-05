@@ -1,7 +1,7 @@
 <p align="center">
   <img src=".github/banner/1-van-haecht-gallery.jpg" width="100%" alt="agentic-design">
 </p>
-<p align="center"><sub><i>Willem van Haecht's gallery from 1628. We rehung a few walls with things our agents made.</i></sub></p>
+<p align="center"><sub><i>The Gallery of Cornelis van der Geest</i>, Willem van Haecht, 1628<br>Some of the frames now hold work our agents made.</sub></p>
 
 This is how we design with coding agents, bottled up as skills. Install them and
 your agent picks up your team's taste: it tries a few directions before settling
@@ -24,7 +24,7 @@ npx skills add viktor-com/agentic-design
 <p align="center">
   <img src=".github/banner/2-stradanus-workshop.jpg" width="100%" alt="A painter's workshop with apprentices at work">
 </p>
-<p align="center"><sub><i>A painter's workshop, engraved around 1590 by Jan Collaert II after Stradanus. Everyone has one job, which is roughly how a lab runs: one agent per variant.</i></sub></p>
+<p align="center"><sub><i>Color Olivi (Nova Reperta)</i>, Jan Collaert II after Jan van der Straet, c. 1590<br>Each person in the workshop has one job, the way each agent in a lab builds one variant.</sub></p>
 
 ## Example
 
@@ -52,7 +52,7 @@ None of this is our brand. Your colours, fonts and voice come from your own
 <p align="center">
   <img src=".github/banner/3-heemskerck-st-luke.jpg" width="100%" alt="St Luke painting the Virgin">
 </p>
-<p align="center"><sub><i>Maarten van Heemskerck's St Luke, 1532, still fussing over one portrait. That's design review.</i></sub></p>
+<p align="center"><sub><i>St Luke Painting the Virgin</i>, Maarten van Heemskerck, 1532<br>One picture, reworked until it is right. That is what design review is for.</sub></p>
 
 ## License
 
