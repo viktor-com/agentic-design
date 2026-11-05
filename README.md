@@ -1,4 +1,7 @@
-# agentic-design
+<p align="center">
+  <img src=".github/banner/1-van-haecht-gallery.jpg" width="100%" alt="agentic-design">
+</p>
+<p align="center"><sub><i>Willem van Haecht, The Gallery of Cornelis van der Geest, 1628, hung with our own work</i></sub></p>
 
 How we do design with coding agents, packaged as skills. They give an agent the
 team's taste and rules, so it builds options worth picking from and shows its
@@ -16,6 +19,11 @@ npx skills add viktor-com/agentic-design
 - **infographic**: makes a one-frame graphic for a PR, a launch or a result, with real UI and numbers against a named baseline.
 - **prototype-ui**: runs a prototype lab, a few clickable variants next to today's UI, picked and iterated over rounds.
 - **visualize-ui**: turns UI changes, data and flows into annotated stills, slowed clips, infographics and explainer pages.
+
+<p align="center">
+  <img src=".github/banner/2-stradanus-workshop.jpg" width="100%" alt="A painter's workshop with apprentices at work">
+</p>
+<p align="center"><sub><i>Jan Collaert II after Jan van der Straet (Stradanus), Color Olivi (Nova Reperta), c. 1590. A workshop where every hand has one job.</i></sub></p>
 
 ## Example
 
@@ -40,6 +48,11 @@ any point to switch.
 None of the skills carry a brand. Colours, fonts and voice all come from your
 `DESIGN.md`.
 
+<p align="center">
+  <img src=".github/banner/3-heemskerck-st-luke.jpg" width="100%" alt="St Luke painting the Virgin">
+</p>
+<p align="center"><sub><i>Maarten van Heemskerck, St Luke Painting the Virgin, 1532. One picture, worked over until it's right.</i></sub></p>
+
 ## License
 
-MIT
+MIT. The paintings are public domain.
