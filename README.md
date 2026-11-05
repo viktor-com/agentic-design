@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/banner/1-van-haecht-gallery.jpg" width="100%" alt="agentic-design"><br>
+  <img src=".github/banner/1-van-haecht-gallery.jpg" width="100%" alt="designmaxx"><br>
   <sub><i>The Gallery of Cornelis van der Geest</i>, Willem van Haecht, 1628<br>Some of the frames now hold work our agents made.</sub>
 </p>
 
@@ -9,7 +9,7 @@ on one, checks its own work like a fussy designer would, and shows you what
 changed in a picture instead of a paragraph.
 
 ```bash
-npx skills add viktor-com/agentic-design
+npx skills add viktor-com/designmaxx
 ```
 
 ## Skills
