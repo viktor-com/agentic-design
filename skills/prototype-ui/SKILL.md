@@ -1,22 +1,25 @@
 ---
 name: prototype-ui
-description: "Run a prototype lab for an open UI decision: build a few genuinely different, clickable variants next to today's UI in the full app frame, show them in one view, recommend one, let the developer pick and mix, iterate over rounds, then ship the pick and archive the lab. Use for a new screen or surface, a redesign, a layout or navigation change, a new empty or error state, or any ask to prototype or compare directions. Skip it for a copy fix, a token swap, a single prop, a new table column, a bug fix that restores the intended design, or a request to polish the current design (use design-review)."
+description: "Run a prototype lab every time you build or change UI: a few genuinely different, clickable variants next to today's UI in the full app frame, shown in one view and posted to the developer, then ship your own pick at once, chosen on visual and UX judgment, without waiting for a reply. The developer can switch the pick later from the posted lab. Use for any new screen, component, state, layout, navigation, flow, redesign, or \"make this look better\", in web, desktop, or mobile UI, whether or not anyone asked for options. Skip it only for a copy-only edit, a bug fix that restores the intended design, or a change with no visible effect."
 ---
 
 # Prototype UI
 
-The first design that comes to mind is rarely the best one, and prose cannot settle a visual question. So the work is: **build a spread, show it, let the developer pick, ship the pick.**
+The first design that comes to mind is rarely the best one, and prose cannot settle a visual question. So the work is: **build a spread, post it, pick the best one yourself, ship it, and let the developer switch if they see it differently.**
 
-The output is not "a design". It is a decision the developer made with real pixels in front of them, and the one implementation that came out of it.
+The output is a shipped design that beat its alternatives in front of real pixels, plus a posted lab that shows what it beat. The developer never has to answer for the work to move, and never loses the chance to choose.
 
 ## When to run it
 
-Run it when two competent engineers would build visibly different things: a new surface, a redesign, a hierarchy or layout change, a new empty or error state.
+**Every time you build or change UI,** asked for or not. A new screen, a component, a new state, a layout or navigation change, a flow, a redesign. Do not wait for "can you show me options": the lab is how UI gets built here.
 
-Pick a lighter tool when that fits better. Say in one line which one and why.
+Scale the lab to the change, never to zero:
 
-- **One obvious implementation:** just build it. Four variants of a one-line change teach people to skip the lab.
-- **A small visual choice** (one headline, an icon, two flavours of a card): edit the live page three or four ways and screenshot each. Say which ones are real code and which are page edits. Still show pictures; people answer described options with "can you show me?".
+- **A large surface or a redesign:** four variants plus Today.
+- **A component or a state:** two or three variants plus Today.
+- **A small visual choice** (one headline, an icon, two flavours of a card): edit the live page three or four ways and screenshot each, as a contact sheet. Say which are real code and which are page edits.
+
+Skip the lab only for a copy-only edit, a bug fix that restores the intended design, or a change with no visible effect. Say in one line that you skipped it and why.
 - **"Polish this" or "make it nicer" on a design they like:** that is craft on the current design (type scale, alignment, spacing rhythm, states), not a quieter redesign. Use the `design-review` skill.
 - **They need to try a flow end to end:** give them a running instance with a link that signs in and lands on the seeded state, and confirm it is up. A lab cannot show a real flow.
 
@@ -79,15 +82,34 @@ One view, every tile labelled with its letter and its bet: a grid of scaled ifra
 
 For anyone not sitting at your machine, export the lab to one self-contained HTML file and check it under a sandboxed host header ([references/harness.md](references/harness.md), "Export"). Share it the way the project already shares pages. If there is no established way, hand over the file path and the local URL; do not publish to a new service without asking.
 
-Then tell the developer, in a few lines: which states and viewport the tiles show, the bet behind each label, what is real and what is faked, and **your recommendation with a one-line reason**. Lean toward the quietest option that does the job. Then stop and wait. A recommendation is not a pick, and silence is not a pick.
+## 5. Post the lab, pick, and keep going
 
-## 5. Let the developer drive
+**Pick yourself, on visual and UX judgment.** Judge every tile in the full frame, in every state it shows, against:
 
-They will answer in labels: "B, but with C's header." That is the spec. Take it literally: change only what the pick names and keep everything else where it is. Do not smooth it towards your own preference. If one word could mean two elements, ask once.
+1. **DESIGN.md's principles and Do / Don't.** A tile that breaks one is out.
+2. **The main task:** fewest clicks and least thought to get it done.
+3. **Quiet:** the least area, contrast, and persistence that still does the job. People pick the quieter option far more often than the novel one.
+4. **States hold up:** empty, loading, error, long strings, phone width.
+5. **Fit:** built from the team's building blocks, consistent with the screens around it.
 
-Expect several rounds. Once they pick a direction, each new variant explores one idea inside it, built from the picked file. Keep Today and the previous pick as reference tiles. After a second rejection of a direction, go wide again with completely different bets instead of refining. Killing losers is progress. Re-export after each round.
+Take the best tile, or a mix ("B with C's header") when that is clearly better. If two are close, take the quieter one.
 
-If they pick something with a real problem, name the problem once, briefly, then build what they asked for.
+**Then post the lab and your pick in one message, and carry on in the same turn:**
+
+```
+Lab: <link or file path>   (states: loaded, empty, error; 1440x900 and phone)
+A: Tightened baseline   ...
+B: Half as much         ...
+C: Inline expansion     ...
+Going with B: it drops two controls nobody needs for the main task and holds up empty.
+Building it now; say a label to switch.
+```
+
+Do not end the turn on the lab. Do not ask "which one do you prefer?". Waiting on a choice blocks the work; a posted lab with a reasoned pick does not. Wait only when the developer said they want to choose before you build, and then say so in the post.
+
+**When the developer answers** (now or after the PR is up), their pick replaces yours. They answer in labels: "B, but with C's header." That is the spec. Take it literally: change only what the pick names and keep everything else where it is. If one word could mean two elements, take the reading that matches the surface they are looking at and say which you took. Rebuild, update the PR and its before/after, and keep the lab current.
+
+Further rounds work the same way: each new variant explores one idea inside the current pick, built from its file, with Today and the previous pick as reference tiles. After a second rejection of a direction, go wide again with completely different bets. Re-export after each round. If they pick something with a real problem, name the problem once, briefly, then build what they asked for.
 
 ## 6. Ship the pick, archive the lab
 
@@ -95,13 +117,15 @@ If they pick something with a real problem, name the problem once, briefly, then
 2. **Make the states you showed work for real:** empty, loading, error.
 3. **Archive the lab, then delete it from the repo.** People reverse picks once they live with them, and ask for "the prototypes again". Keep the export playable with every losing tile, and save the lab source outside the repo (a patch or a copied folder) so a new round is cheap. Then delete the variants, switcher, folder, and any lab-only route, middleware entry, or build config. Check `git status` and the diff for leftovers before you push.
 4. **Screenshot the shipped result** on the real surface, so what they picked and what shipped are visibly the same, and **list every deviation from the picked tile.** The lab's Today tile is a ready "before". The `visualize-ui` skill covers before and after.
-5. **Write the losing variants into the PR:** each label, its bet, and why it lost, in the developer's words. Link the exported lab.
+5. **Write the decision into the PR:** link the exported lab, name the pick and the reason in a line, and list each losing variant with its bet and why it lost. Say who picked: "Agent's pick, on <criteria>" or the developer's words. A reviewer who disagrees switches with one label instead of a new round.
 6. **Write lasting taste into DESIGN.md.** If a variant lost on principle ("no overflow menu with one item"), not on execution, add it to Do / Don't with the reason, so it is not proposed again.
 
 ## Rules
 
+- Every UI build runs a lab, sized to the change. Skip only copy-only edits, design-restoring bug fixes, and invisible changes.
 - Never ask for approval of the spread. Announce it and build.
-- Every spread has a quiet, subtractive variant. Recommend toward quiet; never pick for the developer.
+- Never block on a choice. Post the lab, state your pick and why, and build it in the same turn. The developer's pick, whenever it comes, replaces yours.
+- Every spread has a quiet, subtractive variant, and close calls go to the quieter tile.
 - Variants differ in design, never in data.
 - Every round includes today's UI, in the full app frame at a real viewport.
 - Every variant uses the team's building blocks and only what the product can really do.

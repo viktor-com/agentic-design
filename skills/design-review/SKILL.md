@@ -124,7 +124,7 @@ Fix what is real, in the same change, then run the visual check again on the fix
 - what you left and why (a product decision for the person, not a nit you skipped),
 - the gap list, if any platform is not done.
 
-Put the before and after of anything visible in the PR (`visualize-ui`). Where the person will try it, hand them a link that signs in and lands on the seeded state.
+Put the before and after of anything visible in the PR (`visualize-ui`). The PR is not ready without it; check the body before you mark it ready. Where the person will try it, hand them a link that signs in and lands on the seeded state.
 
 If a finding is a lasting rule the team would want every time, offer to add it to DESIGN.md's Do / Don't.
 

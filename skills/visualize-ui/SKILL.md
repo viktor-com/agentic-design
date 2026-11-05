@@ -1,6 +1,6 @@
 ---
 name: visualize-ui
-description: "Turn UI changes, ideas, data, and flows into visuals people get at a glance, built in code: annotated Retina screenshots, slowed side-by-side clips for motion, before/after pairs for pull requests, infographics and announcement graphics, design proposal pages, and HTML explainers with diagrams. Every PR that changes what a person sees gets its before and after: use this without being asked. Also use whenever UI or a result is shown to people in a bug report, message, doc, or announcement."
+description: "Before opening, updating, or marking ready any PR that changes what a person sees, capture and post its annotated before/after; a UI PR without one is not ready. Also turn UI changes, ideas, data, and flows into visuals people get at a glance, built in code: annotated Retina screenshots, slowed side-by-side clips for motion, before/after pairs for pull requests, infographics and announcement graphics, design proposal pages, and HTML explainers with diagrams. Every PR that changes what a person sees gets its before and after: use this without being asked. Also use whenever UI or a result is shown to people in a bug report, message, doc, or announcement."
 ---
 
 # Visualize UI
@@ -52,7 +52,9 @@ A claim that something moves, holds still, or does not jump needs per-frame samp
 
 ### A pull request
 
-**Every PR that changes what a person sees carries its before and after,** planned with the change, not added when someone asks.
+**Every PR that changes what a person sees carries its before and after,** planned with the change, not added when someone asks. It is a gate, like passing tests: do not open the PR as ready, mark it ready, or ask for review until the pair is in the body. When you push a change that alters what the pair shows, recapture it before the next ready or review request. No one should ever have to ask for screenshots.
+
+Check yourself before every PR you open or update: does this diff touch anything rendered (components, styles, copy, icons, layout, motion, generated pages)? If yes, the pair is due.
 
 - The before comes from its own checkout at the merge base, in the same state, input, data, viewport, and theme as the after. Not a flag-off build of the branch, which already carries the PR's other changes, and never files swapped back in the working tree.
 - Freeze the code while the pair is captured, and name the commit it covers. After every design change, capture again, so no stale image survives in the body.

@@ -19,16 +19,23 @@ npx skills add viktor-com/agentic-design
 
 ## Example
 
-Start with `DESIGN.md`, once per repo, then ask for a design:
+Set up once per repo:
 
 ```
 > Set up our DESIGN.md
-> The settings page feels cluttered. Prototype a few directions.
 ```
 
-The agent builds four variants and today's UI side by side, recommends one, and
-waits. You answer in labels ("B, but with C's header"), it iterates, then ships
-the pick with a before and after in the PR.
+That writes `DESIGN.md` and adds the design rules to `AGENTS.md` (and `CLAUDE.md`) and
+to the PR template, so every agent follows them on every task. Then just build:
+
+```
+> The settings page feels cluttered. Fix it.
+```
+
+The agent builds a few variants next to today's UI, posts the lab with its pick and
+the reason, and keeps going without waiting. It reviews the result, then opens the
+PR with an annotated before/after. Reply with a label ("B, but with C's header") at
+any point to switch.
 
 None of the skills carry a brand. Colours, fonts and voice all come from your
 `DESIGN.md`.

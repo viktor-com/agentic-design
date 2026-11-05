@@ -13,11 +13,12 @@ This skill ships no brand. Every value in DESIGN.md comes from the project itsel
 
 `DESIGN.md` at the repo root. If the project keeps docs elsewhere, `docs/DESIGN.md` is fine.
 
-Then make sure every agent finds it. Add one line to the file your agents already load (`AGENTS.md`, `CLAUDE.md`, `.cursor/rules`, or similar):
+Then wire the design rules into the files agents always load, so they apply on every task, even when no skill is triggered. Skills load only when their description matches; these files load every time.
 
-```
-Read DESIGN.md before any UI, prototype, or visual work.
-```
+1. **Agent instructions.** Append `templates/AGENTS-design.md` to the file your agents already read: `AGENTS.md`, and `CLAUDE.md` too if the repo has one (or a one-line `CLAUDE.md` that says `@AGENTS.md`), `.cursor/rules`, or similar. It makes every agent read DESIGN.md, run a prototype lab for every UI build, ship its own pick without blocking, review before showing, and put a before/after in every UI PR. If a section like it exists, merge rather than duplicate.
+2. **PR template.** Add `templates/pr-template-section.md` to `.github/pull_request_template.md` (create it if missing), so the before/after has a place in every PR and a reviewer sees when it is missing.
+
+Do both in the same change as DESIGN.md, and say so in the summary. If the user prefers different defaults (for example, waiting for their pick), edit the block rather than dropping it.
 
 ## Write it from evidence
 

@@ -36,7 +36,7 @@ Run this on your own list before you spend build time. Nobody else will catch a 
 
 Every spread includes one quiet, subtractive variant: less area, lower contrast, fewer lines, or less persistence than today. Across many labs, people picked the slimmer, quieter, or previously shipped option far more often than the agent's richer recommendation. A promo card, a header control, or a status treatment that wins in a crop often reads as "way too loud" in the full screen.
 
-Weight your recommendation the same way: toward the quietest option that still does the job, not the most novel. Recommend the richer one only when you can name what the quiet one fails at.
+Weight your own pick the same way: toward the quietest option that still does the job, not the most novel. Pick the richer one only when you can name what the quiet one fails at.
 
 Quiet is not the same as polished. If the developer likes the current design and asks for polish, a round of quieter variants is the wrong answer; that is a craft pass on what exists.
 
