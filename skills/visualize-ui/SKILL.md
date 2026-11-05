@@ -54,6 +54,8 @@ A claim that something moves, holds still, or does not jump needs per-frame samp
 
 **Every PR that changes what a person sees carries its before and after,** planned with the change, not added when someone asks. It is a gate, like passing tests: do not open the PR as ready, mark it ready, or ask for review until the pair is in the body. When you push a change that alters what the pair shows, recapture it before the next ready or review request. No one should ever have to ask for screenshots.
 
+No PR (no remote, work handed back in chat, a commit for someone else to push): the pair goes in your hand-off message instead, as a file path or attachment. The rule is about the person seeing the change, not about the PR.
+
 Check yourself before every PR you open or update: does this diff touch anything rendered (components, styles, copy, icons, layout, motion, generated pages)? If yes, the pair is due.
 
 - The before comes from its own checkout at the merge base, in the same state, input, data, viewport, and theme as the after. Not a flag-off build of the branch, which already carries the PR's other changes, and never files swapped back in the working tree.
