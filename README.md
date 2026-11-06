@@ -1,6 +1,6 @@
 <p align="center">
   <img src=".github/banner/1-van-haecht-gallery.jpg" width="100%" alt="designmaxx"><br>
-  <sub><i>The Gallery of Cornelis van der Geest</i>, Willem van Haecht, 1628<br>Some of the frames now hold work our agents made.</sub>
+  <sub><i>The Gallery of Cornelis van der Geest</i>, Willem van Haecht, 1628<br>The frames hold designmaxxing work. Ars gratia artis. Or, sacrum et profanum?</sub>
 </p>
 
 This is how we design with coding agents, bottled up as skills. Install them and
