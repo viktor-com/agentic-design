@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/banner/1-van-haecht-gallery.jpg" width="100%" alt="designmaxx"><br>
+  <img src=".github/banner/1-van-haecht-gallery.jpg" width="880" height="275" alt="designmaxx"><br>
   <sub><i>The Gallery of Cornelis van der Geest</i>, Willem van Haecht, 1628<br>The frames hold designmaxxing work. Ars gratia artis. Or, sacrum et profanum?</sub>
 </p>
 
@@ -22,7 +22,7 @@ npx skills add viktor-com/designmaxx
 - **visualize-ui**: turns UI changes, data and flows into annotated stills, slowed clips, infographics and explainer pages.
 
 <p align="center">
-  <img src=".github/banner/2-stradanus-workshop.jpg" width="100%" alt="A painter's workshop with apprentices at work"><br>
+  <img src=".github/banner/2-stradanus-workshop.jpg" width="880" height="275" alt="A painter's workshop with apprentices at work"><br>
   <sub><i>Color Olivi (Nova Reperta)</i>, Jan Collaert II after Jan van der Straet, c. 1590<br>Each person in the workshop has one job, the way each skill here contributes a key part of the agentic design workflow.</sub>
 </p>
 
@@ -50,7 +50,7 @@ None of this is our brand. Your colours, fonts and voice come from your own
 `DESIGN.md`.
 
 <p align="center">
-  <img src=".github/banner/3-heemskerck-st-luke.jpg" width="100%" alt="St Luke painting the Virgin"><br>
+  <img src=".github/banner/3-heemskerck-st-luke.jpg" width="880" height="275" alt="St Luke painting the Virgin"><br>
   <sub><i>St Luke Painting the Virgin</i>, Maarten van Heemskerck, 1532<br>Checking the work vs. the intention. A scene much like a design review.</sub>
 </p>
 
