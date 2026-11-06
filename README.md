@@ -23,7 +23,7 @@ npx skills add viktor-com/designmaxx
 
 <p align="center">
   <img src=".github/banner/2-stradanus-workshop.jpg" width="100%" alt="A painter's workshop with apprentices at work"><br>
-  <sub><i>Color Olivi (Nova Reperta)</i>, Jan Collaert II after Jan van der Straet, c. 1590<br>Each person in the workshop has one job, the way each agent in a lab builds one variant.</sub>
+  <sub><i>Color Olivi (Nova Reperta)</i>, Jan Collaert II after Jan van der Straet, c. 1590<br>Each person in the workshop has one job, the way each skill here contributes a key part of the agentic design workflow.</sub>
 </p>
 
 ## Example
